@@ -1,29 +1,21 @@
 package main
 
-import "fmt"
+import "sort"
 import "math/rand"
 
 func main() {
-  ns := rand.Perm(10)
+  ns := sort.IntSlice(rand.Perm(10))
 
   Insort(ns)
-  println(ns)
+  Println(ns)
 }
 
-func Insort(nums []int) {
-  if len(nums) > 1 {
-    for j := 1; j < len(nums); j++ {
-      key := nums[j]
-      for i := j - 1; i >= 0 && nums[i] >= key; i-- {
-        nums[i + 1] = nums[i]
+func Insort(nums sort.Interface) {
+  if nums.Len() > 1 {
+    for i := 0; i < nums.Len(); i++ {
+      for j := i; j > 0 && nums.Less(j, j - 1); j-- {
+        nums.Swap(j, j - 1)
       }
     }
   }
-}
-
-func println(nums []int) {
-  for _, n := range nums {
-    fmt.Printf("%d ", n)
-  }
-  fmt.Println()
 }

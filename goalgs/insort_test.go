@@ -1,5 +1,6 @@
 package main
 
+import "sort"
 import "math/rand"
 import "testing"
 import "flag"
@@ -11,20 +12,11 @@ func BenchmarkInsort(b *testing.B) {
 
   for i := 0; i < b.N; i++ {
     r := rand.New(rand.NewSource(int64(i)))
-    ns := r.Perm(*size)
+    ns := sort.IntSlice(r.Perm(*size))
 
     Insort(ns)
-    if !isSorted(ns) {
+    if !IsSorted(ns) {
       b.Errorf("slice is not sorted")
     }
   }
-}
-
-func isSorted(nums []int) bool {
-  for i := 0; i < len(nums) - 1; i++ {
-    if nums[i] > nums[i+1] {
-      return false
-    }
-  }
-  return true
 }
