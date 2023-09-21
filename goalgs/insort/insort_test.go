@@ -1,9 +1,11 @@
 package main
 
-import "sort"
-import "math/rand"
-import "testing"
-import "flag"
+import (
+  "sort"
+  "math/rand"
+  "testing"
+  "flag"
+)
 
 var size = flag.Int("size", 10000, "size of permutation slice")
 
@@ -15,7 +17,7 @@ func BenchmarkInsort(b *testing.B) {
     ns := sort.IntSlice(r.Perm(*size))
 
     Insort(ns)
-    if !IsSorted(ns) {
+    if !sort.IsSorted(ns) {
       b.Errorf("slice is not sorted")
     }
   }

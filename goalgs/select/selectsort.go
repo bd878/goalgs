@@ -1,14 +1,6 @@
 package main
 
 import "sort"
-import "math/rand"
-
-func main() {
-  ns := sort.IntSlice(rand.Perm(10))
-
-  Selectsort(ns)
-  Println(ns)
-}
 
 func Selectsort(nums sort.Interface) {
   for i := 0; i < nums.Len(); i++ {

@@ -1,14 +1,8 @@
 package main
 
-import "sort"
-import "math/rand"
-
-func main() {
-  ns := sort.IntSlice(rand.Perm(10))
-
-  Insort(ns)
-  Println(ns)
-}
+import (
+  "sort"
+)
 
 func Insort(nums sort.Interface) {
   if nums.Len() > 1 {
