@@ -21,20 +21,21 @@ func MergeAB(a []int, n int, b []int, m int) []int {
 
 func Merge(a []int, l, m, r int) {
   var i, j int
-  aux := make([]int, r-l)
+  var total, ll, rl, rr = r-l+1, 0, m+1, r-l
+  aux := make([]int, total)
 
-  for i = l; i < m; i++ {
-    aux[i] = a[i]
+  for i = l; i <= m; i++ {
+    aux[i-l] = a[i]
   }
-  i = l
+  i = ll
 
   // reverse order
-  for j = m; j < r; j++ {
-    aux[(r-l)-(j-m)-1] = a[j]
+  for j = rl; j <= r; j++ {
+    aux[(r-l)-(j-rl)] = a[j]
   }
-  j = r-1
+  j = rr
 
-  for k := l; k < r; k++ {
+  for k := l; k <= r; k++ {
     // most right less than most left
     if aux[j] < aux[i] {
       a[k] = aux[j]

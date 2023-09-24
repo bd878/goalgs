@@ -11,6 +11,7 @@ import (
 const MAX_N = 10e1
 
 var (
+  size = flag.Int("size", 10e4, "sort size length")
   alen = flag.Int("alen", 10e3, "a length")
   blen = flag.Int("blen", 10e2, "b length")
 )
@@ -21,12 +22,28 @@ func TestMain(m *testing.M) {
   os.Exit(m.Run())
 }
 
+func TestMergeSort(t *testing.T) {
+  ns := rand.Perm(*size)
+
+  Mergesort(ns)
+  if !sort.IsSorted(sort.IntSlice(ns)) {
+    t.Error("perm is not sorted")
+  }
+}
+
 func TestMergeAB(t *testing.T) {
   a, b := getSorted()
 
   c := MergeAB(a, a.Len(), b, b.Len())
   if !sort.IsSorted(sort.IntSlice(c)) {
     t.Error("c is not sorted")
+  }
+
+  a = []int{3}
+  b = []int{2}
+  c = MergeAB(a, a.Len(), b, b.Len())
+  if !sort.IsSorted(sort.IntSlice(c)) {
+    t.Error("small c is not sorted")
   }
 }
 
@@ -37,10 +54,22 @@ func TestMerge(t *testing.T) {
   c = append(c, a...)
   c = append(c, b...)
 
-  Merge(c, 0, a.Len(), a.Len()+b.Len())
+  Merge(c, 0, a.Len()-1, a.Len()+b.Len()-1)
 
   if !sort.IsSorted(sort.IntSlice(c)) {
     t.Error("c is not sorted")
+  }
+
+  c = []int{3, 2}
+  Merge(c, 0, 0, 1)
+  if !sort.IsSorted(sort.IntSlice(c)) {
+    t.Error("small c is not sorted")
+  }
+
+  c = []int{1}
+  Merge(c, 0, 0, 0)
+  if !sort.IsSorted(sort.IntSlice(c)) {
+    t.Error("one-elem c is not sorted")
   }
 }
 
