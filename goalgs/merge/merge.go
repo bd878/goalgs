@@ -46,3 +46,61 @@ func Merge(a []int, l, m, r int) {
     }
   }
 }
+
+func MergeStop(a []int, l, m, r int) {
+  var maxn int
+
+  n1 := m-l+1
+  n2 := r-m
+
+  ln := make([]int, n1+1)
+  rn := make([]int, n2+1)
+  for i := 0; i < n1; i++ {
+    ln[i] = a[l+i]
+    maxn = max(maxn, ln[i])
+  }
+  for j := 0; j < n2; j++ {
+    rn[j] = a[m+j+1]
+    maxn = max(maxn, rn[j])
+  }
+
+  // signal flags
+  maxn++
+  ln[n1] = maxn
+  rn[n2] = maxn
+
+  for k, i, j := l, 0, 0; k <= r; k++ {
+    if ln[i] <= rn[j] {
+      a[k] = ln[i]
+      i = i+1
+    } else {
+      a[k] = rn[j]
+      j = j+1
+    }
+  }
+}
+
+func MergeNonStop(a []int, l, m, r int) {
+  ln := make([]int, m-l+1)
+  rn := make([]int, r-m)
+  for i := 0; i < len(ln); i++ {
+    ln[i] = a[l+i]
+  }
+  for j := 0; j < len(rn); j++ {
+    rn[j] = a[m+j+1]
+  }
+
+  n1 := len(ln)
+  n2 := len(rn)
+  for k, i, j := l, 0, 0; k <= r; k++ {
+    if n2 == 0 || (n1 > 0 && ln[i] <= rn[j]) {
+      a[k] = ln[i]
+      i = i+1
+      n1 = n1-1
+    } else {
+      a[k] = rn[j]
+      j = j+1
+      n2 = n2-1
+    }
+  }
+}

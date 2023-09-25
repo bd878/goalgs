@@ -31,6 +31,31 @@ func TestMergeSort(t *testing.T) {
   }
 }
 
+func TestMergeStop(t *testing.T) {
+  funcs := [](func([]int, int, int, int)){
+    MergeStop, MergeNonStop,
+  }
+
+  for _, fn := range funcs {
+    a, b := getSorted()
+
+    c := make([]int, 0, a.Len()+b.Len())
+    c = append(c, a...)
+    c = append(c, b...)
+
+    fn(c, 0, a.Len()-1, a.Len()+b.Len()-1)
+    if !sort.IsSorted(sort.IntSlice(c)) {
+      t.Error("c is not sorted")
+    }
+
+    c = []int{3, 2}
+    fn(c, 0, 0, 1)
+    if !sort.IsSorted(sort.IntSlice(c)) {
+      t.Error("small c is not sorted")
+    }
+  }
+}
+
 func TestMergeAB(t *testing.T) {
   a, b := getSorted()
 
