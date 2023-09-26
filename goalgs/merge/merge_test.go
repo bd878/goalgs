@@ -23,11 +23,17 @@ func TestMain(m *testing.M) {
 }
 
 func TestMergeSort(t *testing.T) {
-  ns := rand.Perm(*size)
+  funcs := [](func([]int)){
+    Mergesort, MergesortUp,
+  }
 
-  Mergesort(ns)
-  if !sort.IsSorted(sort.IntSlice(ns)) {
-    t.Error("perm is not sorted")
+  for _, fn := range funcs {
+    ns := []int{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}
+
+    fn(ns)
+    if !sort.IsSorted(sort.IntSlice(ns)) {
+      t.Error("perm is not sorted")
+    }
   }
 }
 
