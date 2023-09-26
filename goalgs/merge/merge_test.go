@@ -28,7 +28,7 @@ func TestMergeSort(t *testing.T) {
   }
 
   for _, fn := range funcs {
-    ns := []int{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}
+    ns := rand.Perm(*size)
 
     fn(ns)
     if !sort.IsSorted(sort.IntSlice(ns)) {
