@@ -9,6 +9,7 @@ import (
 func TestLinkedLists(t *testing.T) {
   for scenario, fn := range map[string]func(*testing.T){
     "cyclic linked list": testCyclicLinkedList,
+    "dump head node linked list": testDumpHeadNodeLinkedList,
   } {
     t.Run(scenario, fn)
   }
@@ -36,6 +37,29 @@ func testCyclicLinkedList(t *testing.T) {
 
   i := 0
   head.Traverse(func(v *ds.CyclicNode[int]) {
+    if v.Item() != perm[i] {
+      t.Errorf("node #%d have wrong value %v\n", i, v.Item())
+    }
+    i += 1
+  })
+}
+
+func testDumpHeadNodeLinkedList(t *testing.T) {
+  head := ds.NewDumpHeadNode[int]()
+
+  if !head.IsEmpty() {
+    t.Error("dump head is not empty")
+  }
+
+  perm := rand.Perm(rand.Intn(100))
+  next := head
+  for i := 0; i < len(perm); i++ {
+    next.Insert(ds.NewDumpHeadLLNode[int](perm[i]))
+    next = next.Next()
+  }
+
+  i := 0
+  head.Traverse(func (v *ds.DumpHeadLLNode[int]) {
     if v.Item() != perm[i] {
       t.Errorf("node #%d have wrong value %v\n", i, v.Item())
     }

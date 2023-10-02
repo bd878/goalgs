@@ -35,9 +35,8 @@ func (x *CyclicNode[T]) IsOnlyOne() bool {
 func (x *CyclicNode[T]) Traverse(fn func(*CyclicNode[T])) {
   fn(x)
   if !x.IsOnlyOne() {
-    for t := x.Next(); t != x; {
+    for t := x.Next(); t != x; t = t.Next() {
       fn(t)
-      t = t.Next()
     } 
   }
 }
