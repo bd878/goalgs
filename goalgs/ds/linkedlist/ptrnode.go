@@ -1,19 +1,27 @@
 package linkedlist
 
+// TODO: PtrCyclicNode
+
 type PtrNode[T interface{}] struct {
   value T
   next *PtrNode[T]
 }
 
+func NewPtrNode[T interface{}](value T) *PtrNode[T] {
+  return &PtrNode[T]{value: value}
+}
+
+// returns next node
 func (x *PtrNode[T]) Insert(t *PtrNode[T]) *PtrNode[T] {
   if x == nil {
     x = t
     x.next = nil
+    return x
   } else {
     t.next = x.Next()
     x.next = t
+    return t
   }
-  return x
 }
 
 func (x *PtrNode[T]) DeleteNext() {

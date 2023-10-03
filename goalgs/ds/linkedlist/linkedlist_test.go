@@ -3,6 +3,7 @@ package linkedlist_test
 import (
   "testing"
   "math/rand"
+
   ds "github.com/bd878/goalgs/ds/linkedlist"
 )
 
@@ -31,8 +32,7 @@ func testCyclicLinkedList(t *testing.T) {
   head = ds.NewCyclicNode[int](perm[0])
   next := head
   for i := 1; i < len(perm); i++ {
-    next.Insert(ds.NewCyclicNode[int](perm[i]))
-    next = next.Next()
+    next = next.Insert(ds.NewCyclicNode[int](perm[i]))
   }
 
   i := 0

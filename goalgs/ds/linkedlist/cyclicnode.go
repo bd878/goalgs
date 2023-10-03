@@ -11,13 +11,16 @@ func NewCyclicNode[T interface{}](value T) *CyclicNode[T] {
   return x
 }
 
-func (x *CyclicNode[T]) Insert(t *CyclicNode[T]) {
+func (x *CyclicNode[T]) Insert(t *CyclicNode[T]) *CyclicNode[T] {
   t.next = x.next
   x.next = t
+  return t
 }
 
-func (x *CyclicNode[T]) DeleteNext() {
-  x.next = x.next.next
+func (x *CyclicNode[T]) DeleteNext() *CyclicNode[T] {
+  result := x.Next()
+  x.next = x.Next().Next()
+  return result
 }
 
 func (x *CyclicNode[T]) Next() *CyclicNode[T] {
