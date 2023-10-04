@@ -1,4 +1,4 @@
-package main
+package merge
 
 import (
   "testing"
@@ -6,6 +6,8 @@ import (
   "os"
   "flag"
   "sort"
+
+  ds "github.com/bd878/goalgs/ds/linkedlist"
 )
 
 const MAX_N = 10e1
@@ -101,6 +103,35 @@ func TestMerge(t *testing.T) {
   Merge(c, 0, 0, 0)
   if !sort.IsSorted(sort.IntSlice(c)) {
     t.Error("one-elem c is not sorted")
+  }
+}
+
+func TestMergeLL(t *testing.T) {
+  a := &ds.DumpHeadNode[int]{}
+  b := &ds.DumpHeadNode[int]{}
+  heada, headb := a, b
+
+  perm1, perm2 := getSorted()
+
+  perms := make([]int, len(perm1)+len(perm2))
+  copy(perms, perm1)
+  copy(perms[len(perm1):], perm2)
+  sort.Sort(sort.IntSlice(perms))
+
+  for _, v := range perm1 {
+    a = a.Insert(ds.NewDumpHeadNode[int](v))
+  }
+
+  for _, v := range perm2 {
+    b = b.Insert(ds.NewDumpHeadNode[int](v))
+  }
+
+  c := MergeLL(heada.Next(), headb.Next())
+  for i, v := range perms {
+    if v != c.Item() {
+      t.Errorf("=== %dth values not equal: %d != %d\n", i, v, c.Item())
+    }
+    c = c.Next()
   }
 }
 

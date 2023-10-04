@@ -1,4 +1,4 @@
-package main
+package merge
 
 func MergeAB(a []int, n int, b []int, m int) []int {
   c := make([]int, n + m)
