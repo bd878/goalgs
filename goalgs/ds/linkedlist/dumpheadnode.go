@@ -1,47 +1,49 @@
 package linkedlist
 
-type DumpHeadLLNode[T interface{}] struct {
+import (
+  "golang.org/x/exp/constraints"
+)
+
+type DumpHeadNode[T constraints.Ordered] struct {
   value T
-  next *DumpHeadLLNode[T]
+  next *DumpHeadNode[T]
 }
 
-func NewDumpHeadNode[T interface{}]() *DumpHeadLLNode[T] {
-  return &DumpHeadLLNode[T]{}
+func NewDumpHeadNode[T constraints.Ordered](value T) *DumpHeadNode[T] {
+  return &DumpHeadNode[T]{value: value}
 }
 
-func NewDumpHeadLLNode[T interface{}](value T) *DumpHeadLLNode[T] {
-  return &DumpHeadLLNode[T]{value: value}
-}
-
-func (x *DumpHeadLLNode[T]) Insert(t *DumpHeadLLNode[T]) {
-  if x.IsEmpty() {
-    x.next = t
-  } else {
-    t.next = x.Next()
-    x.next = t
+func (x *DumpHeadNode[T]) Insert(t *DumpHeadNode[T]) *DumpHeadNode[T] {
+  if x.Next() != nil {
+    t.SetNext(x.Next())
   }
+  return x.SetNext(t)
 }
 
-func (x *DumpHeadLLNode[T]) DeleteNext() {
-  if !x.IsEmpty() {
-    x.next = x.next.next
+func (x *DumpHeadNode[T]) DeleteNext() *DumpHeadNode[T] {
+  if x.Next() != nil {
+    result := x.Next()
+    x.SetNext(x.Next().Next())
+    return result
   }
+  return nil
 }
 
-func (x *DumpHeadLLNode[T]) Next() *DumpHeadLLNode[T] {
+func (x *DumpHeadNode[T]) SetNext(t *DumpHeadNode[T]) *DumpHeadNode[T] {
+  x.next = t
+  return t
+}
+
+func (x *DumpHeadNode[T]) Next() *DumpHeadNode[T] {
   return x.next
 }
 
-func (x *DumpHeadLLNode[T]) Item() T {
+func (x *DumpHeadNode[T]) Item() T {
   return x.value
 }
 
-func (x *DumpHeadLLNode[T]) Traverse(fn func(*DumpHeadLLNode[T])) {
+func (x *DumpHeadNode[T]) Traverse(fn func(*DumpHeadNode[T])) {
   for t := x.Next(); t != nil; t = t.Next() {
     fn(t)
   }
-}
-
-func (x *DumpHeadLLNode[T]) IsEmpty() bool {
-  return x.Next() == nil
 }

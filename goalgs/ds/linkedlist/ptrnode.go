@@ -24,13 +24,15 @@ func (x *PtrNode[T]) Insert(t *PtrNode[T]) *PtrNode[T] {
   }
 }
 
-func (x *PtrNode[T]) DeleteNext() {
+func (x *PtrNode[T]) DeleteNext() *PtrNode[T] {
   if !x.IsEmpty() {
     t := x.Next()
     if !t.IsEmpty() {
       x.next = t.Next()
     }
+    return t
   }
+  return nil
 }
 
 func (x *PtrNode[T]) Next() *PtrNode[T] {

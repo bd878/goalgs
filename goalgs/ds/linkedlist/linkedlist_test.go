@@ -45,21 +45,21 @@ func testCyclicLinkedList(t *testing.T) {
 }
 
 func testDumpHeadNodeLinkedList(t *testing.T) {
-  head := ds.NewDumpHeadNode[int]()
+  head := &ds.DumpHeadNode[int]{}
 
-  if !head.IsEmpty() {
-    t.Error("dump head is not empty")
+  if head.Next() != nil {
+    t.Error("dump head not next is not nil")
   }
 
   perm := rand.Perm(rand.Intn(100))
   next := head
   for i := 0; i < len(perm); i++ {
-    next.Insert(ds.NewDumpHeadLLNode[int](perm[i]))
+    next.Insert(ds.NewDumpHeadNode[int](perm[i]))
     next = next.Next()
   }
 
   i := 0
-  head.Traverse(func (v *ds.DumpHeadLLNode[int]) {
+  head.Traverse(func (v *ds.DumpHeadNode[int]) {
     if v.Item() != perm[i] {
       t.Errorf("node #%d have wrong value %v\n", i, v.Item())
     }
