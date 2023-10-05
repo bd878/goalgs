@@ -136,23 +136,29 @@ func TestMergeLL(t *testing.T) {
 }
 
 func TestMergeSortLL(t *testing.T) {
-  ns := rand.Perm(*size)
-  sorted := make([]int, len(ns))
-  copy(sorted, ns)
-  sort.Ints(sorted)
-
-  a := &ds.DumpHeadNode[int]{}
-  c := a
-  for _, v := range ns {
-    c = c.Insert(ds.NewDumpHeadNode[int](v))
+  funcs := []func(*ds.DumpHeadNode[int]) *ds.DumpHeadNode[int] {
+    MergesortLL[int], MergesortLLUp[int],
   }
-  a = MergesortLL[int](a.Next())
 
-  for i, v := range sorted {
-    if v != a.Item() {
-      t.Errorf("=== %dth values not equal: %d != %d\n", i, v, a.Item())
+  for _, fn := range funcs {  
+    ns := rand.Perm(*size)
+    sorted := make([]int, len(ns))
+    copy(sorted, ns)
+    sort.Ints(sorted)
+
+    a := &ds.DumpHeadNode[int]{}
+    c := a
+    for _, v := range ns {
+      c = c.Insert(ds.NewDumpHeadNode[int](v))
     }
-    a = a.Next()
+    a = fn(a.Next())
+
+    for i, v := range sorted {
+      if v != a.Item() {
+        t.Errorf("=== %dth values not equal: %d != %d\n", i, v, a.Item())
+      }
+      a = a.Next()
+    }
   }
 }
 

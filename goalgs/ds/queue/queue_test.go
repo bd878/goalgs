@@ -7,7 +7,7 @@ import (
 )
 
 func TestQueue(t *testing.T) {
-  q := ds.NewQueue[int](10)
+  q := ds.New[int](10)
 
   q.Enqueue(1)
   if v := q.Dequeue(); v != 1 {

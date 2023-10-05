@@ -7,7 +7,7 @@ type Queue[T interface{}] struct {
   tail int
 }
 
-func NewQueue[T interface{}](n int) *Queue[T] {
+func New[T interface{}](n int) *Queue[T] {
   q := Queue[T]{}
   q.q = make([]T, n)
   q.n = n
@@ -34,6 +34,6 @@ func (q *Queue[T]) Dequeue() T {
   return val
 }
 
-func (q *Queue[T]) IsEmpty() bool {
+func (q *Queue[T]) Empty() bool {
   return q.head % q.n == q.tail
 }

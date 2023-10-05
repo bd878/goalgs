@@ -3,6 +3,7 @@ package merge
 import (
   "golang.org/x/exp/constraints"
   ds "github.com/bd878/goalgs/ds/linkedlist"
+  queue "github.com/bd878/goalgs/ds/queue"
 )
 
 func Mergesort(nums []int) {
@@ -51,4 +52,29 @@ func MergesortLL[T constraints.Ordered](c *ds.DumpHeadNode[T]) *ds.DumpHeadNode[
   c.SetNext(nil)
 
   return MergeLL[T](MergesortLL[T](a), MergesortLL[T](b))
+}
+
+func MergesortLLUp[T constraints.Ordered](c *ds.DumpHeadNode[T]) *ds.DumpHeadNode[T] {
+  const max = 10e5
+  q := queue.New[*ds.DumpHeadNode[T]](max)
+
+  if c == nil || c.Next() == nil {
+    return c
+  }
+
+  // fill queue with 1-element lists
+  u := &ds.DumpHeadNode[T]{}
+  for ; c != nil; c = u {
+    u = c.Next()
+    c.SetNext(nil)
+    q.Enqueue(c)
+  }
+
+  c = q.Dequeue()
+  for ; !q.Empty(); {
+    q.Enqueue(c)
+    c = MergeLL[T](q.Dequeue(), q.Dequeue())
+  }
+
+  return c
 }
