@@ -1,5 +1,10 @@
 package merge
 
+import (
+  "golang.org/x/exp/constraints"
+  ds "github.com/bd878/goalgs/ds/linkedlist"
+)
+
 func Mergesort(nums []int) {
 	if len(nums) > 1 {
 		mergesort(nums, 0, len(nums)-1)
@@ -29,4 +34,21 @@ func mergesortUp(nums []int, from, to int) {
       Merge(nums, ll, mm, rr)
     }
   }
+}
+
+func MergesortLL[T constraints.Ordered](c *ds.DumpHeadNode[T]) *ds.DumpHeadNode[T] {
+  if c == nil || c.Next() == nil {
+    return c
+  }
+
+  a, b := c, c.Next()
+  // divide list on two even parts
+  for ; b != nil && b.Next() != nil; {
+    c = c.Next()
+    b = b.Next().Next() // 2x step
+  }
+  b = c.Next()
+  c.SetNext(nil)
+
+  return MergeLL[T](MergesortLL[T](a), MergesortLL[T](b))
 }
