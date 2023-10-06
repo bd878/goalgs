@@ -9,7 +9,7 @@ type UnorderedArrayPQ[T constraints.Ordered] struct {
   n int
 }
 
-func NewUnorderedArrayPQ[T constraints.Ordered](maxn int) *UnorderedArrayPQ[T] {
+func NewUnorderedArrayPQ[T constraints.Ordered](maxn int) PriorityQueue[T] {
   return &UnorderedArrayPQ[T]{
     pq: make([]T, maxn),
   }
