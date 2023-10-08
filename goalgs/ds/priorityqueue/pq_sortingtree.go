@@ -11,8 +11,24 @@ type SortingTreePQ[T constraints.Ordered] struct {
 
 func NewSortingTreePQ[T constraints.Ordered](maxn int) PriorityQueue[T] {
   return &SortingTreePQ[T]{
-    pq: make([]T, maxn+1),
+    pq: make([]T, maxn),
   }
+}
+
+func (q *SortingTreePQ[T]) SetItems(pq []T) {
+  q.pq = pq
+}
+
+func (q *SortingTreePQ[T]) Items() []T {
+  return q.pq
+}
+
+func (q *SortingTreePQ[T]) SetN(n int) {
+  q.n = n
+}
+
+func (q *SortingTreePQ[T]) N() int {
+  return q.n
 }
 
 func (q *SortingTreePQ[T]) Empty() bool {
@@ -20,38 +36,38 @@ func (q *SortingTreePQ[T]) Empty() bool {
 }
 
 func (q *SortingTreePQ[T]) Insert(item T) {
-  q.n += 1
   q.pq[q.n] = item
   q.fixUp(q.n)
+  q.n += 1
 }
 
 func (q *SortingTreePQ[T]) GetMax() T {
-  max := q.pq[1]
-  // max is last
-  q.exchange(1, q.n)
-  // balance tree without last
+  max := q.pq[0]
+  q.exchange(0, q.n-1)
   q.n -= 1
-  q.fixDown(1)
+  q.fixDown(0)
 
   return max
 }
 
 func (q *SortingTreePQ[T]) fixUp(k int) {
-  // parent is smaller than child
-  for ; k > 1 && q.pq[k/2] < q.pq[k]; {
-    q.exchange(k, k/2)
-    k = k/2
+  for p := parent(k); k > 0 && q.pq[p] < q.pq[k]; p = parent(k) {
+    q.exchange(k, p)
+    k = p
   }
 }
 
+func (q *SortingTreePQ[T]) FixUp(k int) {
+  q.fixUp(k)
+}
+
 func (q *SortingTreePQ[T]) fixDown(k int) {
-  for ; 2*k <= q.n; {
-    j := 2*k
-    if j < q.n && q.pq[j] < q.pq[j+1] {
-      // other child
-      j += 1
+  for l, r := children(k); l < q.n; l, r = children(k) {
+    j := l
+    if r < q.n && q.pq[l] < q.pq[r] {
+      j = r
     }
-    // child is larger than parent
+
     if q.pq[k] >= q.pq[j] {
       break
     }
@@ -61,6 +77,22 @@ func (q *SortingTreePQ[T]) fixDown(k int) {
   }
 }
 
+func (q *SortingTreePQ[T]) FixDown(k int) {
+  q.fixDown(k)
+}
+
 func (q *SortingTreePQ[T]) exchange(a, b int) {
   q.pq[a], q.pq[b] = q.pq[b], q.pq[a]
+}
+
+func (q *SortingTreePQ[T]) Exchange(a, b int) {
+  q.exchange(a, b)
+}
+
+func parent(i int) int {
+  return (i-1)/2
+}
+
+func children(i int) (int, int) {
+  return 2*i+1, 2*i+2
 }

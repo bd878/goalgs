@@ -33,25 +33,31 @@ func TestPriorityQueue(t *testing.T) {
 }
 
 func TestSortingTree(t *testing.T) {
-  const size = 11
+  for scenario, s := range map[string][]int {
+    "random perm": rand.Perm(rand.Intn(10e3)),
+    "one-element": []int{5},
+    "two elements": []int{2, 1},
+  } {
+    t.Run(scenario, func(t *testing.T) {
+      size := len(s)
+      q := ds.NewSortingTreePQ[int](size)
 
-  q := ds.NewSortingTreePQ[int](size)
-  s := rand.Perm(size)
+      for i := 0; i < size; i++ {
+        q.Insert(s[i])
+      }
 
-  for i := 0; i < size; i++ {
-    q.Insert(s[i])
-  }
+      if q.Empty() {
+        t.Error("sorting tree pq is empty")
+      }
 
-  if q.Empty() {
-    t.Error("sorting tree pq is empty")
-  }
+      sort.Sort(sort.Reverse(sort.IntSlice(s)))
 
-  sort.Sort(sort.Reverse(sort.IntSlice(s)))
-
-  for i := 0; i < len(s); i++ {
-    max := q.GetMax()
-    if max != s[i] {
-      t.Errorf("max elements not equal: %v != %v\n", max, s[0])
-    }
+      for i := 0; i < len(s); i++ {
+        max := q.GetMax()
+        if max != s[i] {
+          t.Errorf("max elements not equal: %v != %v\n", max, s[i])
+        }
+      }
+    })
   }
 }
