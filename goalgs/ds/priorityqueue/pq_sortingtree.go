@@ -93,6 +93,14 @@ func parent(i int) int {
   return (i-1)/2
 }
 
+func Parent(i int) int {
+  return parent(i)
+}
+
 func children(i int) (int, int) {
   return 2*i+1, 2*i+2
+}
+
+func Children(i int) (int, int) {
+  return children(i)
 }
