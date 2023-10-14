@@ -61,3 +61,30 @@ func TestSortingTree(t *testing.T) {
     })
   }
 }
+
+func TestIndexHeap(t *testing.T) {
+  perm := rand.Perm(rand.Intn(10e3))
+  size := len(perm)
+
+  q := ds.NewIndexHeapPQ[int](size)
+  q.SetValues(perm)
+
+  for i := 0; i < size; i++ {
+    q.Insert(i)
+  }
+
+  sorted := make([]int, size)
+  copy(sorted, perm)
+  sort.Sort(sort.Reverse(sort.IntSlice(sorted)))
+
+  if q.Empty() {
+    t.Errorf("queue is empty")
+  }
+
+  for i := 0; i < size; i++ {
+    maxi := q.GetMaxIndex()
+    if perm[maxi] != sorted[i] {
+      t.Errorf("wrong values: %v != %v\n", perm[maxi], sorted[i])
+    }
+  }
+}
