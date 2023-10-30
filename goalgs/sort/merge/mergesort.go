@@ -71,7 +71,7 @@ func MergesortLLUp[T constraints.Ordered](c *ds.DumpHeadNode[T]) *ds.DumpHeadNod
   }
 
   c = q.Dequeue()
-  for ; !q.Empty(); {
+  for ; !q.IsEmpty(); {
     q.Enqueue(c)
     c = MergeLL[T](q.Dequeue(), q.Dequeue())
   }
