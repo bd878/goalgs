@@ -38,7 +38,7 @@ func (n *BTreeNode[T]) Serialize() map[int][]*BTreeNode[T] {
     panic("n is nil, SetItem first")
   }
 
-  var e *BTreeNode[T] = nil
+  var e *BTreeNode[T]
   res := make(map[int][]*BTreeNode[T])
   arr := make([]*BTreeNode[T], 1)
   var v *BTreeNode[T]
@@ -52,6 +52,10 @@ func (n *BTreeNode[T]) Serialize() map[int][]*BTreeNode[T] {
     v = q.Dequeue()
 
     if v == e {
+      if q.IsEmpty() {
+        break;
+      }
+
       res[level] = arr
       level += 1
       arr = make([]*BTreeNode[T], int(math.Pow(2, float64(level))))

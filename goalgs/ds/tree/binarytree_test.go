@@ -10,15 +10,15 @@ import (
 
 func TestBinaryTree(t *testing.T) {
   for screnario, fn := range map[string] func(*testing.T) {
-    "CountTotal": testCountTotal,
-    "Traverse": testTraverse,
-    "BuildBinaryTree": testBuildBinaryTree,
+    "CountTotal": TestCountTotal,
+    "BuildBinaryTree": TestBuildBinaryTree,
+    "TreeHeight": TestTreeHeight,
   } {
     t.Run(screnario, fn)
   }
 }
 
-func testCountTotal(t *testing.T) {
+func TestCountTotal(t *testing.T) {
   root := btree.NewNode[int](10)
   leaf := btree.NewNode[int](11)
   root.L = leaf
@@ -36,11 +36,24 @@ func testCountTotal(t *testing.T) {
   }
 }
 
-func testTraverse(t *testing.T) {
-  t.Skip()  
+func TestTreeHeight(t *testing.T) {
+  // TODO: measure time for input 10e3, 10e4, 10e5 ...etc
+  size := rand.Intn(10e5)
+  tree := btree.Init[rune]()
+
+  elems := getElems(size)
+  for _, v := range elems {
+    tree = tree.Insert(btree.NewNode[rune](v))
+  }
+
+  if tree.CountTotal() != size {
+    t.Error("size != count", size, tree.CountTotal())
+  }
+
+  t.Log("=== height:", tree.Height())
 }
 
-func testBuildBinaryTree(t *testing.T) {
+func TestBuildBinaryTree(t *testing.T) {
   size := 10 // rand.Intn(100)
 
   tree := btree.Init[rune]()
