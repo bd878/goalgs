@@ -7,6 +7,10 @@ type Stack[T interface{}] struct {
   top int
 }
 
+func New[T interface{}]() *Stack[T] {
+  return &Stack[T]{}
+}
+
 func (s *Stack[T]) Push(v T) {
   s.values = append(s.values, v)
   s.top += 1
@@ -19,7 +23,10 @@ func (s *Stack[T]) Pop() (T, error) {
   }
 
   s.top -= 1
-  return s.values[s.top], nil
+  val := s.values[s.top]
+  s.values = s.values[:s.top]
+
+  return val, nil
  }
 
 func (s *Stack[T]) IsEmpty() bool {
