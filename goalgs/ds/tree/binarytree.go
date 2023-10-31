@@ -2,6 +2,7 @@ package binarytree
 
 import (
   "math"
+  "fmt"
 
   stack "github.com/bd878/goalgs/ds/stack"
   queue "github.com/bd878/goalgs/ds/queue"
@@ -25,12 +26,13 @@ func (n *BTreeNode[T]) IsEmpty() bool {
   return n == nil
 }
 
-func (n *BTreeNode[T]) SetItem(v T) {
+func (n *BTreeNode[T]) SetItem(v T) *BTreeNode[T] {
   if n == nil {
     n = &BTreeNode[T]{V: v}
   } else {
     n.V = v
   }
+  return n
 }
 
 func (n *BTreeNode[T]) Serialize() map[int][]*BTreeNode[T] {
@@ -303,4 +305,16 @@ func (n *BTreeNode[T]) print(printer func(T, int), h int) {
 // recursive
 func (n *BTreeNode[T]) Print(printer func(T, int)) {
   n.print(printer, 0)
+}
+
+func PrintRune(r rune, h int) {
+  if r == 0 {
+    fmt.Printf("%" + fmt.Sprint(h+3) + "v\n", "*")
+  } else {
+    fmt.Printf("%" + fmt.Sprint(h+3) + "q\n", r)
+  }
+}
+
+func PrintInt(r int, h int) {
+  fmt.Printf("%" + fmt.Sprint(h+3) + "d\n", r)
 }
