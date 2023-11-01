@@ -5,7 +5,6 @@ type SentinelLLNode[T interface{}] struct {
   next *SentinelLLNode[T]
 }
 
-// first in nil
 func InitSentinelLL[T interface{}]() *SentinelLLNode[T] {
   x := &SentinelLLNode[T]{}
   x.next = x
@@ -29,7 +28,7 @@ func (x *SentinelLLNode[T]) DeleteNext() *SentinelLLNode[T] {
 }
 
 func (x *SentinelLLNode[T]) Next() *SentinelLLNode[T] {
-  return x.Next()
+  return x.next
 }
 
 func (x *SentinelLLNode[T]) Item() T {
