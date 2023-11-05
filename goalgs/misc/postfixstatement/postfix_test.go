@@ -14,3 +14,13 @@ func TestPostfixEvaluate(t *testing.T) {
     t.Error("result != 2075", result)
   }
 }
+
+func TestTranslateToPostfix(t *testing.T) {
+  expression := "(5*(((9+8)*(4*6))+7))"
+  postfix := ps.TranslateInfixToPostfix(expression)
+  result := ps.Evaluate(postfix)
+
+  if result != 2075 {
+    t.Error("postfix form is wrong")
+  }
+}

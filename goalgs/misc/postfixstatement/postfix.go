@@ -1,6 +1,7 @@
 package postfixstatement
 
 import (
+  "strconv"
   stack "github.com/bd878/goalgs/ds/stack"
 )
 
@@ -24,5 +25,23 @@ func Evaluate(expression string) int {
   }
 
   res, _ := s.Pop()
+  return res
+}
+
+func TranslateInfixToPostfix(expression string) string {
+  ops := stack.New[rune]()
+  var res string
+
+  for _, v := range expression {
+    if v == ')' {
+      op, _ := ops.Pop()
+      res += strconv.QuoteRune(op)
+    } else if v == '+' || v == '*' {
+      ops.Push(v)
+    } else if v >= '0' && v <= '9' {
+      res += strconv.QuoteRune(v)
+    }
+  }
+
   return res
 }
