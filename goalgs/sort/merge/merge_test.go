@@ -107,8 +107,8 @@ func TestMerge(t *testing.T) {
 }
 
 func TestMergeLL(t *testing.T) {
-  a := &ds.DumpHeadNode[int]{}
-  b := &ds.DumpHeadNode[int]{}
+  a := ds.InitDumpHeadNode[int]()
+  b := ds.InitDumpHeadNode[int]()
   heada, headb := a, b
 
   perm1, perm2 := getSorted()

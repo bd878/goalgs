@@ -61,7 +61,7 @@ func treeSize(n *bq.Node[int], t *testing.T) int {
 
   var size int
 
-  s := &ds.Stack[*bq.Node[int]]{}
+  s := &ds.ArrStack[*bq.Node[int]]{}
   s.Push(n)
   size += 1
   var top *bq.Node[int]

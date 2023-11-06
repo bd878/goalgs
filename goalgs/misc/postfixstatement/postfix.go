@@ -6,7 +6,7 @@ import (
 )
 
 func Evaluate(expression string) int {
-  s := stack.New[int]()
+  s := stack.NewArrStack[int]()
 
   var a, b int
   for _, v := range expression {
@@ -29,7 +29,7 @@ func Evaluate(expression string) int {
 }
 
 func TranslateInfixToPostfix(expression string) string {
-  ops := stack.New[rune]()
+  ops := stack.NewArrStack[rune]()
   var res string
 
   for _, v := range expression {

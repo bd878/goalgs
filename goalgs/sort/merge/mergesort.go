@@ -63,7 +63,7 @@ func MergesortLLUp[T constraints.Ordered](c *ds.DumpHeadNode[T]) *ds.DumpHeadNod
   }
 
   // fill queue with 1-element lists
-  u := &ds.DumpHeadNode[T]{}
+  u := ds.InitDumpHeadNode[T]()
   for ; c != nil; c = u {
     u = c.Next()
     c.SetNext(nil)

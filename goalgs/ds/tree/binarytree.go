@@ -96,7 +96,7 @@ func (n *BTreeNode[T]) CountTotal() int {
 
   var total int
 
-  s := stack.New[*BTreeNode[T]]()
+  s := stack.NewArrStack[*BTreeNode[T]]()
   s.Push(n)
   total += 1
   var top *BTreeNode[T]
@@ -145,7 +145,7 @@ func (n *BTreeNode[T]) TraverseUpDown(visit func(*BTreeNode[T])) {
     return;
   }
 
-  s := stack.New[*BTreeNode[T]]()
+  s := stack.NewArrStack[*BTreeNode[T]]()
   var v *BTreeNode[T]
 
   s.Push(n)
@@ -209,7 +209,7 @@ func (n *BTreeNode[T]) TraverseDeep(visit func(*BTreeNode[T])) {
     return;
   }
 
-  s := stack.New[*BTreeNode[T]]()
+  s := stack.NewArrStack[*BTreeNode[T]]()
   s.Push(n)
   var v *BTreeNode[T]
 

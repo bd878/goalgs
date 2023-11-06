@@ -6,7 +6,7 @@ import (
 )
 
 func MergeLL[T constraints.Ordered](a *ds.DumpHeadNode[T], b *ds.DumpHeadNode[T]) *ds.DumpHeadNode[T] {
-  head := &ds.DumpHeadNode[T]{}
+  head := ds.InitDumpHeadNode[T]()
   c := head
 
   for ; a != nil && b != nil; {
