@@ -4,7 +4,7 @@ import (
   "testing"
   "math/rand"
 
-  "github.com/bd878/goalgs/ds/tree"
+  tree "github.com/bd878/goalgs/ds/tree"
 )
 
 func TestBinaryTree(t *testing.T) {
@@ -38,39 +38,41 @@ func TestCountTotal(t *testing.T) {
 func TestTreeHeight(t *testing.T) {
   // TODO: measure time for input 10e3, 10e4, 10e5 ...etc
   size := rand.Intn(10e5)
-  tree := tree.Init[rune]()
+  head := tree.Init[rune]()
+  root := head
 
   elems := getElems(size)
   for _, v := range elems {
-    tree = tree.Insert(tree.NewNode[rune](v))
+    head = head.Insert(tree.NewNode[rune](v))
   }
 
-  if tree.CountTotal() != size {
-    t.Error("size != count", size, tree.CountTotal())
+  if root.CountTotal() != size {
+    t.Error("size != count", size, root.CountTotal())
   }
 
-  t.Log("=== height:", tree.Height())
+  t.Log("=== height:", root.Height())
 }
 
 func TestBuildBinaryTree(t *testing.T) {
   size := 10 // rand.Intn(100)
 
-  tree := tree.Init[rune]()
+  head := tree.Init[rune]()
+  root := head
 
   elems := getElems(size)
   for _, v := range elems {
-    tree = tree.Insert(tree.NewNode[rune](v))
+    head = head.Insert(tree.NewNode[rune](v))
   }
 
-  if tree.CountTotal() != size {
-    t.Error("size != count", size, tree.CountTotal())
+  if root.CountTotal() != size {
+    t.Error("size != count", size, root.CountTotal())
   }
 
-  if tree.IsEmpty() {
+  if root.IsEmpty() {
     t.Error("tree is empty")
   }
 
-  tree.Print(tree.PrintRune)
+  root.Print(tree.PrintRune)
 }
 
 func getElems(size int) []rune {

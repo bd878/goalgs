@@ -12,10 +12,11 @@ type BTreeNode[T interface{}] struct {
   V T
   L *BTreeNode[T]
   R *BTreeNode[T]
+  init bool
 }
 
 func Init[T interface{}]() *BTreeNode[T] {
-  return nil
+  return &BTreeNode[T]{init: true}
 }
 
 func NewNode[T interface{}](v T) *BTreeNode[T] {
@@ -23,7 +24,7 @@ func NewNode[T interface{}](v T) *BTreeNode[T] {
 }
 
 func (n *BTreeNode[T]) IsEmpty() bool {
-  return n == nil
+  return n == nil || n.init
 }
 
 func (n *BTreeNode[T]) SetItem(v T) *BTreeNode[T] {
@@ -36,7 +37,7 @@ func (n *BTreeNode[T]) SetItem(v T) *BTreeNode[T] {
 }
 
 func (n *BTreeNode[T]) Serialize() map[int][]*BTreeNode[T] {
-  if n == nil {
+  if n.IsEmpty() {
     panic("n is nil, SetItem first")
   }
 
@@ -50,7 +51,7 @@ func (n *BTreeNode[T]) Serialize() map[int][]*BTreeNode[T] {
   q.Enqueue(n)
   q.Enqueue(e)
 
-  for ; !q.IsEmpty(); {
+  for !q.IsEmpty() {
     v = q.Dequeue()
 
     if v == e {
@@ -81,7 +82,7 @@ func (n *BTreeNode[T]) Serialize() map[int][]*BTreeNode[T] {
 }
 
 func (n *BTreeNode[T]) Height() int {
-  if n == nil {
+  if n.IsEmpty() {
     return -1
   }
 
@@ -90,7 +91,7 @@ func (n *BTreeNode[T]) Height() int {
 }
 
 func (n *BTreeNode[T]) CountTotal() int {
-  if n == nil {
+  if n.IsEmpty() {
     return 0
   }
 
@@ -122,7 +123,7 @@ func (n *BTreeNode[T]) CountTotal() int {
 }
 
 func (n *BTreeNode[T]) CountTotalRecursive() int {
-  if n == nil {
+  if n.IsEmpty() {
     return 0
   }
 
@@ -130,7 +131,7 @@ func (n *BTreeNode[T]) CountTotalRecursive() int {
 }
 
 func (n *BTreeNode[T]) HeightRecursive() int {
-  if n == nil {
+  if n.IsEmpty() {
     return 0;
   }
 
@@ -141,7 +142,7 @@ func (n *BTreeNode[T]) HeightRecursive() int {
 }
 
 func (n *BTreeNode[T]) TraverseUpDown(visit func(*BTreeNode[T])) {
-  if n == nil {
+  if n.IsEmpty() {
     return;
   }
 
@@ -164,7 +165,7 @@ func (n *BTreeNode[T]) TraverseUpDown(visit func(*BTreeNode[T])) {
 
 // recursive
 func (n *BTreeNode[T]) TraverseLeftRight(visit func(*BTreeNode[T])) {
-  if n == nil {
+  if n.IsEmpty() {
     return;
   }
 
@@ -186,7 +187,7 @@ func (n *BTreeNode[T]) TraverseLeftRight(visit func(*BTreeNode[T])) {
 
 // recursive
 func (n *BTreeNode[T]) TraverseDownUp(visit func(*BTreeNode[T])) {
-  if n == nil {
+  if n.IsEmpty() {
     return;
   }
 
@@ -205,7 +206,7 @@ func (n *BTreeNode[T]) TraverseDownUp(visit func(*BTreeNode[T])) {
 }
 
 func (n *BTreeNode[T]) TraverseDeep(visit func(*BTreeNode[T])) {
-  if n == nil {
+  if n.IsEmpty() {
     return;
   }
 
@@ -227,7 +228,7 @@ func (n *BTreeNode[T]) TraverseDeep(visit func(*BTreeNode[T])) {
 }
 
 func (n *BTreeNode[T]) TraverseLevel(visit func(*BTreeNode[T])) {
-  if n == nil {
+  if n.IsEmpty() {
     return;
   }
 
@@ -235,7 +236,7 @@ func (n *BTreeNode[T]) TraverseLevel(visit func(*BTreeNode[T])) {
   q.Enqueue(n)
   var v *BTreeNode[T]
 
-  for ; !q.IsEmpty(); {
+  for !q.IsEmpty() {
     v = q.Dequeue()
     visit(v)
 
@@ -249,7 +250,7 @@ func (n *BTreeNode[T]) TraverseLevel(visit func(*BTreeNode[T])) {
 }
 
 func (n *BTreeNode[T]) TraverseRecursive(visit func(*BTreeNode[T])) {
-  if n == nil {
+  if n.IsEmpty() {
     return;
   }
 
@@ -264,13 +265,16 @@ func (n *BTreeNode[T]) Insert(t *BTreeNode[T]) *BTreeNode[T] {
   if n == nil {
     // init tree with value
     return t;
+  } else if n.init {
+    *n = *t
+    return n;
   }
 
   q := queue.New[*BTreeNode[T]](1)
   var v *BTreeNode[T]
 
   q.Enqueue(n)
-  for ; !q.IsEmpty(); {
+  for !q.IsEmpty() {
     v = q.Dequeue()
     if v.L == nil {
       v.L = t
@@ -291,7 +295,7 @@ func (n *BTreeNode[T]) Insert(t *BTreeNode[T]) *BTreeNode[T] {
 }
 
 func (n *BTreeNode[T]) print(printer func(T, int), h int) {
-  if n == nil {
+  if n.IsEmpty() {
     var t T
     printer(t, h)
     return;
