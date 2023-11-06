@@ -2,21 +2,21 @@ package stack
 
 import "errors"
 
-type Stack[T interface{}] struct {
+type ArrStack[T interface{}] struct {
   values []T
   top int
 }
 
-func New[T interface{}]() *Stack[T] {
-  return &Stack[T]{}
+func NewArrStack[T interface{}]() Stack[T] {
+  return &ArrStack[T]{}
 }
 
-func (s *Stack[T]) Push(v T) {
+func (s *ArrStack[T]) Push(v T) {
   s.values = append(s.values, v)
   s.top += 1
 }
 
-func (s *Stack[T]) Pop() (T, error) {
+func (s *ArrStack[T]) Pop() (T, error) {
   if s.IsEmpty() {
     var d T
     return d, errors.New("stack is empty")
@@ -29,6 +29,6 @@ func (s *Stack[T]) Pop() (T, error) {
   return val, nil
  }
 
-func (s *Stack[T]) IsEmpty() bool {
+func (s *ArrStack[T]) IsEmpty() bool {
   return s.top == 0
 }

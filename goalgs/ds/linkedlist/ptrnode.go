@@ -32,8 +32,11 @@ func (x *PtrNode[T]) DeleteNext() *PtrNode[T] {
     t := x.Next()
     x.next = t.Next()
     return t
+  } else {
+    t := *x
+    *x = *(InitPtrLL[T]())
+    return &t
   }
-  return nil
 }
 
 func (x *PtrNode[T]) Next() *PtrNode[T] {
