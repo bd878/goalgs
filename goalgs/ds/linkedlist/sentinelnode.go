@@ -5,6 +5,7 @@ type SentinelLLNode[T interface{}] struct {
   next *SentinelLLNode[T]
 }
 
+// cyclic && first node is empty
 func InitSentinelLL[T interface{}]() *SentinelLLNode[T] {
   x := &SentinelLLNode[T]{}
   x.next = x

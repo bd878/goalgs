@@ -5,6 +5,7 @@ type CyclicNode[T interface{}] struct {
   next *CyclicNode[T]
 }
 
+// cyclic && first node is NOT empty
 func NewCyclicNode[T interface{}](value T) *CyclicNode[T] {
   x := &CyclicNode[T]{value: value}
   x.next = x
@@ -31,15 +32,9 @@ func (x *CyclicNode[T]) Item() T {
   return x.value
 }
 
-func (x *CyclicNode[T]) IsOnlyOne() bool {
-  return x.next == x
-}
-
 func (x *CyclicNode[T]) Traverse(fn func(*CyclicNode[T])) {
   fn(x)
-  if !x.IsOnlyOne() {
-    for t := x.Next(); t != x; t = t.Next() {
-      fn(t)
-    } 
-  }
+  for t := x.Next(); t != x; t = t.Next() {
+    fn(t)
+  } 
 }

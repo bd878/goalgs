@@ -9,6 +9,10 @@ type DumpHeadNode[T constraints.Ordered] struct {
   next *DumpHeadNode[T]
 }
 
+func InitDumpHeadNode[T constraints.Ordered]() *DumpHeadNode[T] {
+  return &DumpHeadNode[T]{}
+}
+
 func NewDumpHeadNode[T constraints.Ordered](value T) *DumpHeadNode[T] {
   return &DumpHeadNode[T]{value: value}
 }

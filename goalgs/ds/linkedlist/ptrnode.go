@@ -1,20 +1,23 @@
 package linkedlist
 
-// TODO: PtrCyclicNode
-
 type PtrNode[T interface{}] struct {
   value T
   next *PtrNode[T]
+  init bool
 }
 
-func NewPtrNode[T interface{}](value T) *PtrNode[T] {
-  return &PtrNode[T]{value: value}
+func InitPtrLL[T interface{}]() *PtrNode[T] {
+  return &PtrNode[T]{init: true}
 }
 
-// returns next node
+func NewPtrNode[T interface{}](v T) *PtrNode[T] {
+  return &PtrNode[T]{value: v}
+}
+
 func (x *PtrNode[T]) Insert(t *PtrNode[T]) *PtrNode[T] {
-  if x == nil {
-    x = t
+  if x.IsEmpty() {
+    // make this node new node with value
+    *x = *t
     x.next = nil
     return x
   } else {
@@ -25,42 +28,32 @@ func (x *PtrNode[T]) Insert(t *PtrNode[T]) *PtrNode[T] {
 }
 
 func (x *PtrNode[T]) DeleteNext() *PtrNode[T] {
-  if !x.IsEmpty() {
+  if x.next != nil {
     t := x.Next()
-    if !t.IsEmpty() {
-      x.next = t.Next()
-    }
+    x.next = t.Next()
     return t
   }
   return nil
 }
 
 func (x *PtrNode[T]) Next() *PtrNode[T] {
-  if !x.IsEmpty() {
-    return x.next
-  } else {
-    return nil
-  }
+  return x.next
 }
 
 func (x *PtrNode[T]) Item() T {
-  if !x.IsEmpty() {
-    return x.value
-  } else {
-    var result T
-    return result
-  }
+  return x.value
 }
 
 func (x *PtrNode[T]) Traverse(fn func(*PtrNode[T])) {
   if x.IsEmpty() {
     return
   }
+
   for t := x; t != nil; t = t.Next() {
-    fn(x)
+    fn(t)
   }
 }
 
 func (x *PtrNode[T]) IsEmpty() bool {
-  return x == nil
+  return x.next == nil && x.init
 }
