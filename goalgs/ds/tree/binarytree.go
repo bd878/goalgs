@@ -86,8 +86,7 @@ func (n *BTreeNode[T]) Height() int {
     return -1
   }
 
-  res := n.Serialize()
-  return len(res)
+  return n.HeightRecursive()
 }
 
 func (n *BTreeNode[T]) CountTotal() int {
@@ -103,7 +102,7 @@ func (n *BTreeNode[T]) CountTotal() int {
   var top *BTreeNode[T]
   var err error
 
-  for ; !s.IsEmpty(); {
+  for !s.IsEmpty() {
     top, err = s.Pop() // remove root from stack
     if err != nil {
       panic(err)
@@ -130,6 +129,10 @@ func (n *BTreeNode[T]) CountTotalRecursive() int {
   return n.L.CountTotalRecursive() + n.R.CountTotalRecursive() + 1;
 }
 
+func (n *BTreeNode[T]) Count() int {
+  return n.CountTotalRecursive()
+}
+
 func (n *BTreeNode[T]) HeightRecursive() int {
   if n.IsEmpty() {
     return 0;
@@ -150,7 +153,7 @@ func (n *BTreeNode[T]) TraverseUpDown(visit func(*BTreeNode[T])) {
   var v *BTreeNode[T]
 
   s.Push(n)
-  for ; !s.IsEmpty(); {
+  for !s.IsEmpty() {
     v, _ = s.Pop()
     // order is important
     if v.R != nil {
@@ -214,7 +217,7 @@ func (n *BTreeNode[T]) TraverseDeep(visit func(*BTreeNode[T])) {
   s.Push(n)
   var v *BTreeNode[T]
 
-  for ; !s.IsEmpty(); {
+  for !s.IsEmpty() {
     v, _ = s.Pop()
     visit(v)
 

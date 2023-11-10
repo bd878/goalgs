@@ -2,38 +2,28 @@ package binaryqueue
 
 import (
   "golang.org/x/exp/constraints"
+  btree "github.com/bd878/goalgs/ds/tree"
 )
 
-type Node[T constraints.Ordered] struct {
-  V T
-  L *Node[T]
-  R *Node[T]
-}
+// Joins two equal size binary sorting trees
+// and returns the greates node of two
+func Pair[T constraints.Ordered](p, q *btree.BTreeNode[T]) *btree.BTreeNode[T] {
+  if p.IsEmpty() {
+    return q
+  } else if q.IsEmpty() {
+    return p
+  }
 
-func NewNode[T constraints.Ordered](v T) *Node[T] {
-  return &Node[T]{V: v}
-}
+  var result *btree.BTreeNode[T]
 
-func (n *Node[T]) SetL(l *Node[T]) {
-  n.L = l
-}
-
-func (n *Node[T]) SetR(r *Node[T]) {
-  n.R = r
-}
-
-// returns greater node
-func (n *Node[T]) Pair(q *Node[T]) *Node[T] {
-  var result *Node[T]
-
-  if (n.V < q.V) {
-    n.SetR(q.L)
-    q.SetL(n) // q.R is empty
+  if (p.V < q.V) {
+    p.R = q.L
+    q.L = p // q.R is empty
     result = q
   } else {
-    q.SetR(n.L)
-    n.SetL(q) // n.R is empty
-    result = n
+    q.R = p.L
+    p.L = q // n.R is empty
+    result = p
   }
 
   return result

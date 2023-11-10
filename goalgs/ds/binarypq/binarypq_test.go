@@ -2,17 +2,17 @@ package binaryqueue_test
 
 import (
   "testing"
-  "fmt"
+  "math/rand"
 
+  btree "github.com/bd878/goalgs/ds/tree"
   bq "github.com/bd878/goalgs/ds/binarypq"
-  ds "github.com/bd878/goalgs/ds/stack"
 )
 
 func TestSortingTree(t *testing.T) {
-  n1 := bq.NewNode[int](10)
-  n2 := bq.NewNode[int](11)
+  n1 := btree.NewNode[int](10)
+  n2 := btree.NewNode[int](11)
 
-  n := n1.Pair(n2)
+  n := bq.Pair(n1, n2)
   if n != n2 {
     t.Errorf("n != n2\n")
   }
@@ -32,56 +32,54 @@ func TestSortingTree(t *testing.T) {
   if n1.R != nil {
     t.Errorf("n1.R not nil\n")
   }
+}
 
-  printTree(n, t)
+func TestGetMax(t *testing.T) {
+  q := bq.NewBinaryPQ[rune](1) // autoresize
+  perm := []rune{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}
 
-  size := treeSize(n, t)
-  if size != 2 {
-    t.Errorf("tree size is %d, not %d\n", size, 2)
+  for _, v := range perm {
+    q.Insert(v)
+  }
+
+  v := q.GetMax()
+  if v != perm[len(perm)-1] {
+    t.Error("res != max", v, perm[len(perm)-1])
   }
 }
 
-func printTree(r *bq.Node[int], t *testing.T) {
-  t.Helper()
+func TestInsert(t *testing.T) {
+  size := 5
+  q := bq.NewBinaryPQ[int](4)
+  perm := rand.Perm(size)
 
-  fmt.Printf("%4d\n", r.V)
-  fmt.Printf("%3d", r.L.V)
-  fmt.Printf("%3c\n", '\u002A')
-}
-
-func treeDepth(n *bq.Node[int], t *testing.T) int {
-  t.Helper()
-
-  var levels int
-
-}
-
-func treeSize(n *bq.Node[int], t *testing.T) int {
-  t.Helper()
-
-  var size int
-
-  s := &ds.ArrStack[*bq.Node[int]]{}
-  s.Push(n)
-  size += 1
-  var top *bq.Node[int]
-  var err error
-
-  for i := 0; i < 5 && !s.IsEmpty(); i++ {
-    top, err = s.Pop() // remove root from stack
-    if err != nil {
-      panic(err)
-    }
-
-    if top.R != nil {
-      s.Push(top.R)
-      size += 1
-    }
-    if top.L != nil {
-      s.Push(top.L)
-      size += 1
-    }
+  for _, v := range perm {
+    q.Insert(v)
   }
 
-  return size
+  v := q.GetMax()
+  if v != size-1 {
+    t.Errorf("max not 11")
+  }
+}
+
+func TestJoin(t *testing.T) {
+  q1 := bq.NewBinaryPQ[int](1)
+  q2 := bq.NewBinaryPQ[int](1)
+
+  perm1 := []int{1, 2}
+  perm2 := []int{3, 4, 5}
+
+  for _, v := range perm1 {
+    q1.Insert(v)
+  }
+  for _, v := range perm2 {
+    q2.Insert(v)
+  }
+
+  q1.Join(q2)
+
+  if q1.IsEmpty() {
+    t.Error("q1 is empty")
+  }
 }
