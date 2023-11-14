@@ -2,15 +2,17 @@ package qsort
 
 import (
   "golang.org/x/exp/constraints"
+
+  ds "github.com/bd878/goalgs/ds/stack"
 )
 
-func QSort[T constraints.Ordered](a []T, l, r int) {
+func QSortRecursive[T constraints.Ordered](a []T, l, r int) {
   if l >= r {
     return;
   }
   i := Part[T](a, l, r)
-  QSort[T](a, l, i-1)
-  QSort[T](a, i+1, r)
+  QSortRecursive[T](a, l, i-1)
+  QSortRecursive[T](a, i+1, r)
 }
 
 func Part[T constraints.Ordered](a []T, l, r int) int {
@@ -28,5 +30,32 @@ func Part[T constraints.Ordered](a []T, l, r int) int {
     return i
   } else {
     return r
+  }
+}
+
+func push(s ds.Stack[int], l, r int) {
+  s.Push(r)
+  s.Push(l)
+}
+
+func QSort[T constraints.Ordered](a []T, l, r int) {
+  s := ds.NewArrStack[int]()
+  push(s, l, r)
+
+  for !s.IsEmpty() {
+    l, _ = s.Pop()
+    r, _ = s.Pop()
+    if r <= l {
+      continue
+    }
+
+    i := Part[T](a, l, r)
+    if i > r-i { // i is above the half
+      push(s, l, i-1) // larger period goes first
+      push(s, i+1, r) // take smaller distance on next iteration
+    } else {
+      push(s, i+1, r) // larger period goes first
+      push(s, l, i-1) // take smaller then
+    }
   }
 }

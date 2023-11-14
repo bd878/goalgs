@@ -9,10 +9,17 @@ import (
 )
 
 func TestQSort(t *testing.T) {
-  perm := rand.Perm(10e3)
-  mysort.QSort[int](perm, 0, len(perm)-1)
+  for scenario, alg := range map[string]func([]int, int, int) {
+    "qsort recursive": mysort.QSortRecursive[int],
+    "qsort": mysort.QSort[int],
+  } {
+    t.Run(scenario, func(t *testing.T) {
+      perm := rand.Perm(10e3)
+      alg(perm, 0, len(perm)-1)
 
-  if !sort.IsSorted(sort.IntSlice(perm)) {
-    t.Error("not sorted")
+      if !sort.IsSorted(sort.IntSlice(perm)) {
+        t.Error("not sorted")
+      }
+    })
   }
 }
