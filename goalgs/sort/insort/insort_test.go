@@ -1,24 +1,18 @@
-package main
+package insort_test
 
 import (
   "sort"
   "math/rand"
   "testing"
-  "flag"
+
+  algs "github.com/bd878/goalgs/sort/insort"
 )
 
-var size = flag.Int("size", 10000, "size of permutation slice")
+func TestInsort(t *testing.T) {
+  ns := sort.IntSlice(rand.Perm(10e2))
 
-func BenchmarkInsort(b *testing.B) {
-  flag.Parse()
-
-  for i := 0; i < b.N; i++ {
-    r := rand.New(rand.NewSource(int64(i)))
-    ns := sort.IntSlice(r.Perm(*size))
-
-    Insort(ns)
-    if !sort.IsSorted(ns) {
-      b.Errorf("slice is not sorted")
-    }
+  algs.Insort(ns)
+  if !sort.IsSorted(ns) {
+    t.Error("slice is not sorted")
   }
 }

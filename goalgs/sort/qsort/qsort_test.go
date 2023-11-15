@@ -5,13 +5,14 @@ import (
   "sort"
   "math/rand"
 
-  mysort "github.com/bd878/goalgs/sort/qsort"
+  algs "github.com/bd878/goalgs/sort/qsort"
 )
 
 func TestQSort(t *testing.T) {
   for scenario, alg := range map[string]func([]int, int, int) {
-    "qsort recursive": mysort.QSortRecursive[int],
-    "qsort": mysort.QSort[int],
+    "qsort recursive": algs.QSortRecursive[int],
+    "qsort": algs.QSort[int],
+    "qsort insort": algs.QSortInsort[int],
   } {
     t.Run(scenario, func(t *testing.T) {
       perm := rand.Perm(10e3)

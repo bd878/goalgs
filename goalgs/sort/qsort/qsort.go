@@ -4,11 +4,25 @@ import (
   "golang.org/x/exp/constraints"
 
   ds "github.com/bd878/goalgs/ds/stack"
+  algs "github.com/bd878/goalgs/sort/insort"
 )
 
 func QSortRecursive[T constraints.Ordered](a []T, l, r int) {
   if l >= r {
     return;
+  }
+  i := Part[T](a, l, r)
+  QSortRecursive[T](a, l, i-1)
+  QSortRecursive[T](a, i+1, r)
+}
+
+func QSortInsort[T constraints.Ordered](a []T, l, r int) {
+  if l >= r {
+    return;
+  }
+  if r-l <= 15 { // or any other file size, [0,25] preferred
+    algs.InsortRange(a, l, r)
+    return
   }
   i := Part[T](a, l, r)
   QSortRecursive[T](a, l, i-1)
