@@ -18,16 +18,18 @@ func NewDumpHeadNode[T constraints.Ordered](value T) *DumpHeadNode[T] {
 }
 
 func (x *DumpHeadNode[T]) Insert(t *DumpHeadNode[T]) *DumpHeadNode[T] {
-  if x.Next() != nil {
-    t.SetNext(x.Next())
+  if x.next != nil {
+    t.next = x.next
   }
-  return x.SetNext(t)
+  x.next = t
+  return t
 }
 
 func (x *DumpHeadNode[T]) DeleteNext() *DumpHeadNode[T] {
-  if x.Next() != nil {
-    result := x.Next()
-    x.SetNext(x.Next().Next())
+  if x.next != nil {
+    result := x.next
+    x.next = result.next
+    result.next = nil
     return result
   }
   return nil
@@ -46,8 +48,13 @@ func (x *DumpHeadNode[T]) Item() T {
   return x.value
 }
 
+func (x *DumpHeadNode[T]) IsEmpty() bool {
+  var empty T
+  return x.value == empty && x.next == nil
+}
+
 func (x *DumpHeadNode[T]) Traverse(fn func(*DumpHeadNode[T])) {
-  for t := x.Next(); t != nil; t = t.Next() {
+  for t := x.next; t != nil; t = t.next {
     fn(t)
   }
 }
