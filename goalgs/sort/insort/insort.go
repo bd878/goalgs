@@ -16,10 +16,10 @@ func Insort(nums sort.Interface) {
 }
 
 func InsortRange[T constraints.Ordered](a []T, l, r int) {
-  if len(a) > 1 {
-    for i := 0; i < len(a); i++ {
-      for j := i; j > 0 && a[i] < a[j-1]; j-- {
-        a[i], a[j-1] = a[j-1], a[i]
+  if r-l > 0 {
+    for i := l; i <= r; i++ {
+      for j := i; j > 0 && a[j] < a[j-1]; j-- {
+        a[j], a[j-1] = a[j-1], a[j]
       }
     }
   }

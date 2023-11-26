@@ -13,6 +13,7 @@ func TestQSort(t *testing.T) {
     "qsort recursive": algs.QSortRecursive[int],
     "qsort": algs.QSort[int],
     "qsort insort": algs.QSortInsort[int],
+    "hybrid qsort": algs.HybridQSort[int],
   } {
     t.Run(scenario, func(t *testing.T) {
       perm := rand.Perm(10e3)
