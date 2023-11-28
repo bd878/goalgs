@@ -100,6 +100,15 @@ func QSort3[T constraints.Ordered](a []T, l, r int) {
   QSort3[T](a, i, r)
 }
 
+// k - k'th least element in array
+func SelectionMedian[T constraints.Ordered](a []T, l, r, k int) {
+  if r <= l { return }
+  i := Part[T](a, l, r)
+  if i > k { SelectionMedian[T](a, l, i-1, k) }
+  if i < k { SelectionMedian[T](a, i+1, r, k) }
+  // i == k : k is already point to k'th least element
+}
+
 func Part[T constraints.Ordered](a []T, l, r int) int {
   v := a[r] // consider most right element to separate around it
   i, j := l, r-1

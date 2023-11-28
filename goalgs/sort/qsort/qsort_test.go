@@ -26,3 +26,20 @@ func TestQSort(t *testing.T) {
     })
   }
 }
+
+func TestFindMedian(t *testing.T) {
+  perm := rand.Perm(20)
+  k := 5
+
+  sorted := make([]int, len(perm))
+  copy(sorted, perm)
+  sort.Sort(sort.IntSlice(sorted))
+
+  algs.SelectionMedian[int](perm, 0, len(perm)-1, k)
+
+  expect := sorted[k]
+
+  if perm[k] != expect {
+    t.Errorf("%d != %d\n", perm[k], expect)
+  }
+}
