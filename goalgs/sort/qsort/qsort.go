@@ -1,11 +1,16 @@
 package qsort
 
 import (
+  "fmt"
   "golang.org/x/exp/constraints"
 
   ds "github.com/bd878/goalgs/ds/stack"
   algs "github.com/bd878/goalgs/sort/insort"
 )
+
+const bitsbyte uint8 = 8
+const bitsword uint8 = 32
+const bytesword uint8 = bitsword/bitsbyte
 
 func QSortRecursive[T constraints.Ordered](a []T, l, r int) {
   if l >= r {
@@ -152,4 +157,44 @@ func QSort[T constraints.Ordered](a []T, l, r int) {
       push(s, l, i-1) // take smaller then
     }
   }
+}
+
+// derives pos'th bit from num
+func getbit(num int32, pos uint8) uint8 {
+  bytecount := pos / bitsbyte
+  var bytemask int32 = (1 << bitsbyte) - 1 // to zero all digits on the left
+
+  byte := (num >> (bitsbyte * bytecount)) & bytemask
+
+  bitcount := pos % bitsbyte
+  bit := (byte >> bitcount) & 1 // mask 1 single bit
+  return uint8(bit)
+}
+
+func printbin(a []int) {
+  for i := 0; i < len(a); i++ {
+    fmt.Printf("%#08b ", a[i])
+  }
+}
+
+func qsortb(a []int, l, r, d int) {
+  i, j := l, r
+  if r <= l || d < 0 { return; }
+
+  for i < j {
+    // 0's left, 1's right
+    for getbit(int32(a[i]), uint8(d)) == 0 && (i < j) { i += 1 }
+    for getbit(int32(a[j]), uint8(d)) == 1 && (j > i) { j -= 1 }
+    if i < j {
+      a[i], a[j] = a[j], a[i]
+    }
+  }
+
+  if getbit(int32(a[r]), uint8(d)) == 0 { j += 1; }
+  qsortb(a, l, j-1, d-1)
+  qsortb(a, j, r, d-1)
+}
+
+func QSortB(a []int, l, r int) {
+  qsortb(a, l, r, int(bitsbyte))
 }

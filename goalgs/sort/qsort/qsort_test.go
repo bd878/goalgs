@@ -43,3 +43,11 @@ func TestFindMedian(t *testing.T) {
     t.Errorf("%d != %d\n", perm[k], expect)
   }
 }
+
+func TestBQSort(t *testing.T) {
+  perm := []int{0b100,0b11,0b10,0b1}
+  algs.QSortB(perm, 0, len(perm)-1)
+  if !sort.IsSorted(sort.IntSlice(perm)) {
+    t.Error("not sorted")
+  }
+}
