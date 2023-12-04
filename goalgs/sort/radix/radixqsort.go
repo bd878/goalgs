@@ -2,12 +2,9 @@ package radix
 
 import (
   "math"
-  // "fmt"
-
-  // algs "github.com/bd878/goalgs/sort/insort"
 )
 
-const keysize int = 10
+const keysize int = 8
 const bitsbyte int = 8
 const baseR int = 10
 
@@ -23,7 +20,7 @@ func radixMSD(a []int, l, r, d int) {
 
   var radix func([]int, int, int, int)
   radix = func(a []int, l, r, d int) {
-    if d > keysize { return; }
+    if d <= 0 { return; }
     if r <= l { return; }
     // crop small-size files
     // if r-l < 15 { algs.InsortRange[int](a, l, r); return; }
@@ -41,12 +38,13 @@ func radixMSD(a []int, l, r, d int) {
       // hence += 1
       count[digit(a[i], d)] += 1
     }
-    // fmt.Printf("count = %v\n", count)
     // restore an order
     for i := l; i <= r; i++ { a[i] = aux[i] }
+    // to handle trailing zeroes
+    radix(a, l, l+count[0]-1, d-1)
     // baseR-1, because take gap from count[j] to count[j+1] 
     for j := 0; j < baseR-1; j++ {
-      radix(a, l+count[j], l+count[j+1]-1, d+1)
+      radix(a, l+count[j], l+count[j+1]-1, d-1)
     }
   }
 
@@ -54,5 +52,5 @@ func radixMSD(a []int, l, r, d int) {
 }
 
 func RadixMSD(a []int, l, r int) {
-  radixMSD(a, l, r, 0)
+  radixMSD(a, l, r, keysize)
 }
