@@ -2,6 +2,7 @@ package qsort
 
 import (
   "fmt"
+  "math"
   "golang.org/x/exp/constraints"
 
   ds "github.com/bd878/goalgs/ds/stack"
@@ -177,6 +178,10 @@ func printbin(a []int) {
   }
 }
 
+func digit(num int, pos int) int {
+  return (num / int(math.Pow10(pos))) % 10
+}
+
 func qsortb(a []int, l, r, d int) {
   i, j := l, r
   if r <= l || d < 0 { return; }
@@ -197,4 +202,59 @@ func qsortb(a []int, l, r, d int) {
 
 func QSortB(a []int, l, r int) {
   qsortb(a, l, r, int(bitsbyte))
+}
+
+// based on qsort3 and radixMSD
+func qsort3Radix(a []int, l, r, d int) {
+  if d <= 0 { return; }
+  if r <= l { return; }
+
+  v := digit(a[r], d)
+  i, j := l-1, r
+  p, q := l-1, r
+
+  // fmt.Printf("%d: %d, %d, %d, %v\n", d, v, l, r, a)
+  for i < j {
+    i += 1
+    for digit(a[i], d) < v { i += 1; }
+    j -= 1 // weil v am Rechts ist
+    for digit(a[j], d) > v && j > l { j -= 1; }
+
+    // if all elements on the left are less than v,
+    // i == r, then do not change r
+    if i > j { break; }
+
+    a[i], a[j] = a[j], a[i]
+    if digit(a[i], d) == v { p += 1; a[p], a[i] = a[i], a[p] }
+    if digit(a[j], d) == v { q -= 1; a[q], a[j] = a[j], a[q] }
+  }
+
+  // fmt.Printf("%d, %d, %d, %d, %v\n",p, q, i, j, a)
+
+  // all M. digits are same
+  if math.Abs(float64(p-q)) <= 1 {
+    // len(key) < keysize, aber fing bei keysize an
+    qsort3Radix(a, l, r, d-1)
+    return;
+  }
+  // if j == i, we first exchange p on j,
+  // there is digit() == v on i position left,
+  // should not exchange with r, hence, move forward
+  if digit(a[i], d) < v { i += 1; }
+
+  // move elements to center
+  for k := l; k <= p; k++ { a[k], a[j] = a[j], a[k]; j -= 1; }
+  for k := r; k >= q; k-- { a[k], a[i] = a[i], a[k]; i += 1; }
+  // sort left end with the same digit
+  qsort3Radix(a, l, j, d)
+  // all elements on the right were the same
+  if (i == r) && (digit(a[i], d) == v) { i += 1; } // i > r
+  // sort the middle
+  if v != 0 { qsort3Radix(a, j+1, i-1, d-1); }
+  qsort3Radix(a, i, r, d)
+}
+
+func QSort3Radix(a []int, l, r int) {
+  const keysize int = 5
+  qsort3Radix(a, l, r, keysize)
 }

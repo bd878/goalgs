@@ -40,7 +40,7 @@ func radixMSD(a []int, l, r, d int) {
     }
     // restore an order
     for i := l; i <= r; i++ { a[i] = aux[i] }
-    // to handle trailing zeroes
+    // to handle trailing zeroes, all counts are the same = r-l
     radix(a, l, l+count[0]-1, d-1)
     // baseR-1, because take gap from count[j] to count[j+1] 
     for j := 0; j < baseR-1; j++ {

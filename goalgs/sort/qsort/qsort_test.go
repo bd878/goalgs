@@ -51,3 +51,22 @@ func TestBQSort(t *testing.T) {
     t.Error("not sorted")
   }
 }
+
+func TestQSort3Radix(t *testing.T) {
+  for scenario, perm := range map[string][]int{
+    "two ordered random values": []int{54321, 98845},
+    "two reversed random values": []int{98845, 54321},
+    "three ordered random values": []int{54321, 98845, 55423},
+    "random set": []int{54321, 98845, 55423, 61234, 74389, 18273, 56472},
+    "all keys digits same": []int{111, 333, 555, 444, 333, 444, 333, 111},
+    "reverse": []int{99, 88, 77, 66, 55, 44, 33, 22},
+    "keys with zeroes": []int{54320, 56780, 38029, 64900, 10920, 45607},
+  } {
+    t.Run(scenario, func(t *testing.T) {
+      algs.QSort3Radix(perm, 0, len(perm)-1)
+      if !sort.IsSorted(sort.IntSlice(perm)) {
+        t.Error("not sorted")
+      }
+    })
+  }
+}
