@@ -54,3 +54,23 @@ func radixMSD(a []int, l, r, d int) {
 func RadixMSD(a []int, l, r int) {
   radixMSD(a, l, r, keysize)
 }
+
+// we can't use qsort.Part, because it is unstable.
+// Instead, we use stable index count sort
+func RadixLSD(a []int, l, r int) {
+  const bytesword int = 10
+
+  aux := make([]int, r-l+1)
+
+  for d := 0; d <= bytesword; d++ {
+    count := make([]int, baseR+1)
+
+    for i := l; i <= r; i++ { count[digit(a[i], d)+1] += 1; }
+    for j := 1; j < baseR; j++ { count[j] += count[j-1]; }
+    for i := l; i <= r; i++ {
+      aux[count[digit(a[i], d)]] = a[i]
+      count[digit(a[i], d)] += 1
+    }
+    for i := l; i <= r; i++ { a[i] = aux[i]; }
+  }
+}

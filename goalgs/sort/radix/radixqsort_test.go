@@ -32,3 +32,21 @@ func TestRadixMSD(t *testing.T) {
     })
   }
 }
+
+func TestRadixLSD(t *testing.T) {
+  for scenario, perm := range map[string][]int{
+    "random set": []int{54321, 98845, 55423, 61234, 74389, 18273, 56472},
+    "all keys digits same": []int{111, 333, 555, 444, 333, 444, 333, 111},
+    "reverse": []int{99, 88, 77, 66, 55, 44, 33, 22},
+    "keys with zeroes": []int{54320, 56780, 38029, 64900, 10920, 45607},
+  } {
+    t.Run(scenario, func(t *testing.T) {
+      algs.RadixLSD(perm, 0, len(perm)-1)
+
+      if !sort.IsSorted(sort.IntSlice(perm)) {
+        t.Errorf("not sorted")
+      }
+    })
+  }
+
+}
