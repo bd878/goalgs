@@ -7,76 +7,80 @@ import (
   "time"
 )
 
-const maxKey uint = 10e2
+const MAX_KEY int = 10e2
 
-type IndexSTItem struct {
+type STItem struct {
   key uint
   value float32
 }
 
-func NewItem() *IndexSTItem {
-  return &IndexSTItem{key: maxKey}
+func NewSTItem() *STItem {
+  return &STItem{key: uint(MAX_KEY)}
 }
 
-func (i *IndexSTItem) Key() uint {
+func (i *STItem) Key() uint {
   return i.key
 }
 
-func (i *IndexSTItem) IsNull() bool {
-  return i.key == maxKey
+func (i *STItem) IsNull() bool {
+  return int(i.key) == MAX_KEY
 }
 
-func (i *IndexSTItem) Rand() {
+func (i *STItem) Rand() {
   r := rand.New(rand.NewSource(time.Now().UnixNano()))
-  i.key = uint(r.Uint32()) % maxKey
+  i.key = uint(r.Uint32()) % uint(MAX_KEY)
   i.value = r.Float32()
 }
 
-func (i *IndexSTItem) Print(w io.Writer) {
+func (i *STItem) Print(w io.Writer) {
   w.Write([]byte(fmt.Sprintf("%d: %g\n", i.key, i.value)))
 }
 
-func (i *IndexSTItem) Value() float32 {
+func (i *STItem) Value() float32 {
   return i.value
 }
 
-func (i *IndexSTItem) SetValue(v float32) {
+func (i *STItem) SetValue(v float32) {
   i.value = v
 }
 
-type IndexST struct {
-  st [](*IndexSTItem)
+func (i *STItem) SetKey(k uint) {
+  i.key = k
 }
 
-func New() *IndexST {
-  st := make([](*IndexSTItem), maxKey)
-  return &IndexST{st}
+type SearchTable struct {
+  st [](*STItem)
 }
 
-func (s *IndexST) Search(key uint) *IndexSTItem {
+func New() *SearchTable {
+  st := make([](*STItem), MAX_KEY)
+  return &SearchTable{st}
+}
+
+func (s *SearchTable) Search(key uint) *STItem {
   return s.st[key]
 }
 
-func (s *IndexST) Insert(i *IndexSTItem) {
+func (s *SearchTable) Insert(i *STItem) {
   s.st[i.Key()] = i
 }
 
-func (s *IndexST) Remove(i *IndexSTItem) {
+func (s *SearchTable) Remove(i *STItem) {
   s.st[i.Key()] = nil
 }
 
-func (s *IndexST) Select(k uint) *IndexSTItem {
+func (s *SearchTable) Select(k uint) *STItem {
   for i := 0; i < len(s.st); i++ {
     if s.st[i] != nil && !s.st[i].IsNull() {
       if k == 0 { return s.st[i]; }
       k -= 1
     }
   }
-  return NewItem()
+  return NewSTItem()
 }
 
-func (s *IndexST) Count() uint {
-  var result uint
+func (s *SearchTable) Count() int {
+  var result int
   for i := 0; i < len(s.st); i++ {
     if s.st[i] != nil && !s.st[i].IsNull() {
       result += 1
@@ -85,7 +89,7 @@ func (s *IndexST) Count() uint {
   return result
 }
 
-func (s *IndexST) Print(w io.Writer) {
+func (s *SearchTable) Print(w io.Writer) {
   for i := 0; i < len(s.st); i++ {
     if s.st[i] != nil && !s.st[i].IsNull() {
       s.st[i].Print(w)
