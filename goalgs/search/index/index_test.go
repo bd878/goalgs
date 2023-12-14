@@ -12,7 +12,7 @@ func TestIndexSearch(t *testing.T) {
 
   items := make([](*index.STItem), rand.Intn(int(index.MAX_KEY)))
   for i := 0; i < len(items); i++ {
-    items[i] = index.NewSTItem()
+    items[i] = index.NewItem()
     items[i].SetKey(uint(i))
     items[i].SetValue(rand.Float32())
     st.Insert(items[i])

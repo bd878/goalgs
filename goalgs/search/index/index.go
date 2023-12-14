@@ -14,7 +14,7 @@ type STItem struct {
   value float32
 }
 
-func NewSTItem() *STItem {
+func NewItem() *STItem {
   return &STItem{key: uint(MAX_KEY)}
 }
 
@@ -22,7 +22,7 @@ func (i *STItem) Key() uint {
   return i.key
 }
 
-func (i *STItem) IsNull() bool {
+func (i *STItem) Null() bool {
   return int(i.key) == MAX_KEY
 }
 
@@ -71,18 +71,18 @@ func (s *SearchTable) Remove(i *STItem) {
 
 func (s *SearchTable) Select(k uint) *STItem {
   for i := 0; i < len(s.st); i++ {
-    if s.st[i] != nil && !s.st[i].IsNull() {
+    if s.st[i] != nil && !s.st[i].Null() {
       if k == 0 { return s.st[i]; }
       k -= 1
     }
   }
-  return NewSTItem()
+  return NewItem()
 }
 
 func (s *SearchTable) Count() int {
   var result int
   for i := 0; i < len(s.st); i++ {
-    if s.st[i] != nil && !s.st[i].IsNull() {
+    if s.st[i] != nil && !s.st[i].Null() {
       result += 1
     }
   }
@@ -91,8 +91,10 @@ func (s *SearchTable) Count() int {
 
 func (s *SearchTable) Print(w io.Writer) {
   for i := 0; i < len(s.st); i++ {
-    if s.st[i] != nil && !s.st[i].IsNull() {
+    if s.st[i] != nil && !s.st[i].Null() {
       s.st[i].Print(w)
     }
   }
 }
+
+func (s *SearchTable) Sort() {}
