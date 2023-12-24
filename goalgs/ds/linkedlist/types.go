@@ -6,4 +6,5 @@ type LLNode[T interface{}] interface {
   Next() LLNode[T]
   Item() T
   Traverse(func(LLNode[T]))
+  IsEmpty() bool
 }

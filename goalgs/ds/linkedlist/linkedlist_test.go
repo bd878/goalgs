@@ -23,7 +23,7 @@ func TestPtrNode(t *testing.T) {
   list := ds.InitPtrLL[int]()
   head := list
   for _, v := range perm {
-    list = list.Insert(ds.NewPtrNode[int](v))
+    list, _ = list.Insert(ds.NewPtrNode[int](v)).(*ds.PtrNode[int])
   }
 
   if head.IsEmpty() {
@@ -31,7 +31,8 @@ func TestPtrNode(t *testing.T) {
   }
 
   i := 0
-  head.Traverse(func(n *ds.PtrNode[int]) {
+  head.Traverse(func(tn ds.LLNode[int]) {
+    var n, _ = tn.(*ds.PtrNode[int])
     if n.Item() != perm[i] {
       t.Error("item != perm[i]", n.Item(), perm[i])
     }

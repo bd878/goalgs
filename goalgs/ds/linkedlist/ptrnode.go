@@ -14,23 +14,28 @@ func NewPtrNode[T interface{}](v T) *PtrNode[T] {
   return &PtrNode[T]{value: v}
 }
 
-func (x *PtrNode[T]) Insert(t *PtrNode[T]) *PtrNode[T] {
+func (x *PtrNode[T]) Insert(n LLNode[T]) LLNode[T] {
+  var t, ok = n.(*PtrNode[T])
+  if !ok {
+    panic("not *PtrNode[T]")
+  }
+
   if x.IsEmpty() {
     // make this node new node with value
     *x = *t
     x.next = nil
     return x
   } else {
-    t.next = x.Next()
+    t.next = x.next
     x.next = t
     return t
   }
 }
 
-func (x *PtrNode[T]) DeleteNext() *PtrNode[T] {
+func (x *PtrNode[T]) DeleteNext() LLNode[T] {
   if x.next != nil {
-    t := x.Next()
-    x.next = t.Next()
+    t := x.next
+    x.next = t.next
     return t
   } else {
     t := *x
@@ -39,7 +44,7 @@ func (x *PtrNode[T]) DeleteNext() *PtrNode[T] {
   }
 }
 
-func (x *PtrNode[T]) Next() *PtrNode[T] {
+func (x *PtrNode[T]) Next() LLNode[T] {
   return x.next
 }
 
@@ -47,12 +52,12 @@ func (x *PtrNode[T]) Item() T {
   return x.value
 }
 
-func (x *PtrNode[T]) Traverse(fn func(*PtrNode[T])) {
+func (x *PtrNode[T]) Traverse(fn func(LLNode[T])) {
   if x.IsEmpty() {
     return
   }
 
-  for t := x; t != nil; t = t.Next() {
+  for t := x; t != nil; t = t.next {
     fn(t)
   }
 }
