@@ -14,6 +14,7 @@ func NewPtrNode[T interface{}](v T) *PtrNode[T] {
   return &PtrNode[T]{value: v}
 }
 
+// returns next inserted note
 func (x *PtrNode[T]) Insert(n LLNode[T]) LLNode[T] {
   var t, ok = n.(*PtrNode[T])
   if !ok {
@@ -62,6 +63,9 @@ func (x *PtrNode[T]) Traverse(fn func(LLNode[T])) {
   }
 }
 
+// we introduce init flag in case
+// ll would contain empty nodes only
 func (x *PtrNode[T]) IsEmpty() bool {
+  if x == nil { return true }
   return x.next == nil && x.init
 }

@@ -37,6 +37,7 @@ func mergesortUp(nums []int, from, to int) {
   }
 }
 
+// TODO: rewrite on linked list interface linkedlist.LLNode[T]
 func MergesortLL[T constraints.Ordered](c *ds.DumpHeadNode[T]) *ds.DumpHeadNode[T] {
   if c == nil || c.Next() == nil {
     return c
