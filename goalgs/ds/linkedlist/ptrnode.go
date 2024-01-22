@@ -33,6 +33,22 @@ func (x *PtrNode[T]) Insert(n LLNode[T]) LLNode[T] {
   }
 }
 
+// returns next note
+func (x *PtrNode[T]) SetNext(n LLNode[T]) LLNode[T] {
+  var t, ok = n.(*PtrNode[T])
+  if !ok {
+    panic("not *PtrNode[T")
+  }
+
+  if x.IsEmpty() {
+    *x = *t
+    return x
+  } else {
+    x.next = t
+    return t
+  }
+}
+
 func (x *PtrNode[T]) DeleteNext() LLNode[T] {
   if x.next != nil {
     t := x.next
