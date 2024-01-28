@@ -8,24 +8,24 @@ import (
 
 const MAX_N int = 10
 
-type SearchTable[K constraints.Ordered, I types.Item[K]] struct {
+type OrderedST[K constraints.Ordered, I types.Item[K]] struct {
   n int
   st []I
   zero I
 }
 
-func New[K constraints.Ordered, I types.Item[K]]() *SearchTable[K, I] {
+func NewOrderedST[K constraints.Ordered, I types.Item[K]]() *OrderedST[K, I] {
   st := make([]I, MAX_N)
   var zero I
-  return &SearchTable[K, I]{n:0, st:st, zero: zero}
+  return &OrderedST[K, I]{n:0, st:st, zero: zero}
 }
 
-func (s *SearchTable[K, I]) Count() int {
+func (s *OrderedST[K, I]) Count() int {
   return s.n
 }
 
 // search is consecutive intentionally
-func (s *SearchTable[K, I]) Search(v K) I {
+func (s *OrderedST[K, I]) Search(v K) I {
   var i int
   for ; i < s.n; i++ {
     if s.st[i].Key() >= v { break; }
@@ -34,9 +34,9 @@ func (s *SearchTable[K, I]) Search(v K) I {
   return s.zero
 }
 
-func (s *SearchTable[K, I]) Sort() { /* sorted on insert */ }
+func (s *OrderedST[K, I]) Sort() { /* sorted on insert */ }
 
-func (s *SearchTable[K, I]) Insert(x I) {
+func (s *OrderedST[K, I]) Insert(x I) {
   v := x.Key()
   i := s.n
   // right shift elements
@@ -48,7 +48,7 @@ func (s *SearchTable[K, I]) Insert(x I) {
   s.n += 1
 }
 
-func (s *SearchTable[K, I]) Remove(x I) {
+func (s *OrderedST[K, I]) Remove(x I) {
   v := x.Key()
   i := 0
   for ; i < s.n && v != s.st[i].Key(); i++ {}
@@ -64,14 +64,14 @@ func (s *SearchTable[K, I]) Remove(x I) {
   s.n -= 1
 }
 
-func (s *SearchTable[K, I]) print() {
+func (s *OrderedST[K, I]) print() {
   for i := 0; i < s.n; i++ {
     fmt.Print(s.st[i].Key(), " ")
   }
   fmt.Println()
 }
 
-func (s *SearchTable[K, I]) Select(i int) I {
+func (s *OrderedST[K, I]) Select(i int) I {
   if i < s.n {
     return s.st[i]
   }
