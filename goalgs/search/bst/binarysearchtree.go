@@ -1,14 +1,28 @@
 package bst
 
 import (
+  "fmt"
   "golang.org/x/exp/constraints"
   "github.com/bd878/goalgs/search/types"
 )
 
+// TODO: rewrite on ds/tree/binarytree
 type BTreeNode[I interface{}] struct {
   Item I
   L *BTreeNode[I]
   R *BTreeNode[I]
+}
+
+func (n *BTreeNode[I]) print(printer func(I, int), h int) {
+  if n == nil {
+    var zero I
+    printer(zero, h)
+    return;
+  }
+
+  printer(n.Item, h)
+  n.R.print(printer, h+1)
+  n.L.print(printer, h+1)
 }
 
 type BinaryST[K constraints.Ordered, I types.Item[K]] struct {
@@ -17,6 +31,12 @@ type BinaryST[K constraints.Ordered, I types.Item[K]] struct {
 
 func NewBinaryST[K constraints.Ordered, I types.Item[K]]() *BinaryST[K, I] {
   return &BinaryST[K, I]{}
+}
+
+func (s *BinaryST[K, I]) Print() {
+  s.head.print(func(v I, h int) {
+    fmt.Printf("%" + fmt.Sprint(h+3) + "v\n", v)
+  }, 0)
 }
 
 func (s *BinaryST[K, I]) searchR(h *BTreeNode[I], v K) I {
@@ -90,4 +110,20 @@ func (s *BinaryST[K, I]) Insert(x I) {
     return
   }
   s.insertR(s.head, x)
+}
+
+func (s *BinaryST[K, I]) Sort() {
+  panic("not implemented")
+}
+
+func (s *BinaryST[K, I]) Remove(x I) {
+  panic("not implemented")
+}
+
+func (s *BinaryST[K, I]) Select(_ int) I {
+  panic("not implemented")
+}
+
+func (s *BinaryST[K, I]) Count() int {
+  panic("not implemented")
 }
