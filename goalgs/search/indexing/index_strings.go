@@ -20,6 +20,8 @@ type StringItem[K interface{ string }] struct {
 
 func (s *StringItem[K]) Key() string {
   // TODO: bad bad bad, return []byte or store index as single string
+  // TODO: sofar it will fail, because it returns remaining text, but search value
+  // may be a single word
   return string(textIndex[s.idx:]) // till end, since slice is only a reference
 }
 

@@ -2,6 +2,7 @@ package bst
 
 import (
   "fmt"
+  "errors"
   "golang.org/x/exp/constraints"
   "github.com/bd878/goalgs/search/types"
 )
@@ -31,6 +32,10 @@ type BinaryST[K constraints.Ordered, I types.Item[K]] struct {
 
 func NewBinaryST[K constraints.Ordered, I types.Item[K]]() *BinaryST[K, I] {
   return &BinaryST[K, I]{}
+}
+
+func (s *BinaryST[K, I]) Head() *BTreeNode[I] {
+  return s.head
 }
 
 func (s *BinaryST[K, I]) Print() {
@@ -110,6 +115,87 @@ func (s *BinaryST[K, I]) Insert(x I) {
     return
   }
   s.insertR(s.head, x)
+}
+
+// Rotates tree rights
+func (s *BinaryST[K, I]) rotR(h **BTreeNode[I]) error {
+  if *h == nil {
+    return errors.New("h is nil")
+  }
+  if (*h).L == nil {
+    return errors.New("h.L is nil, nothing to right-rotate")
+  }
+  // h is a pointer to current header link
+  // x is a left node of h, x is the new header
+  x := (*h).L
+  (*h).L = x.R
+  // h must become right branch of x
+  x.R = *h
+  *h = x
+
+  return nil
+}
+
+func (s *BinaryST[K, I]) TopRotateR() error {
+  if s.head != nil {
+    return s.rotR(&s.head)
+  }
+  return nil
+}
+
+// Rotates tree lefts
+func (s *BinaryST[K, I]) rotL(h **BTreeNode[I]) error {
+  if *h == nil {
+    return errors.New("h is nil")
+  }
+  if (*h).R == nil {
+    return errors.New("h.R is nil, nothing to left-rotate")
+  }
+  // x is right node of h. x is the new header
+  x := (*h).R
+  (*h).R = x.L
+  x.L = *h
+  *h = x
+
+  return nil
+}
+
+func (s *BinaryST[K, I]) TopRotateL() error {
+  if s.head != nil {
+    return s.rotL(&s.head)
+  }
+  return nil
+}
+
+func (s *BinaryST[K, I]) insertT(h **BTreeNode[I], x I) {
+  hv := *h
+  if x.Key() < hv.Item.Key() {
+    if hv.L == nil {
+      hv.L = &BTreeNode[I]{Item: x}
+      return
+    }
+    s.insertT(&(hv.L), x)
+    if err := s.rotR(h); err != nil {
+      panic(err)
+    }
+  } else {
+    if hv.R == nil {
+      hv.R = &BTreeNode[I]{Item: x}
+      return
+    }
+    s.insertT(&(hv.R), x)
+    if err := s.rotL(h); err != nil {
+      panic(err)
+    }
+  }
+}
+
+func (s *BinaryST[K, I]) InsertInRoot(x I) {
+  if s.head == nil {
+    s.head = &BTreeNode[I]{Item: x}
+    return
+  }
+  s.insertT(&s.head, x)
 }
 
 func (s *BinaryST[K, I]) Sort() {
