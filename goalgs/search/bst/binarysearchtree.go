@@ -10,18 +10,18 @@ import (
 // TODO: rewrite on ds/tree/binarytree
 type BTreeNode[I interface{}] struct {
   Item I
+  N int // internal nodes in branch
   L *BTreeNode[I]
   R *BTreeNode[I]
 }
 
-func (n *BTreeNode[I]) print(printer func(I, int), h int) {
+func (n *BTreeNode[I]) print(printer func(*BTreeNode[I], int), h int) {
   if n == nil {
-    var zero I
-    printer(zero, h)
+    printer(nil, h)
     return;
   }
 
-  printer(n.Item, h)
+  printer(n, h)
   n.R.print(printer, h+1)
   n.L.print(printer, h+1)
 }
@@ -39,8 +39,12 @@ func (s *BinaryST[K, I]) Head() *BTreeNode[I] {
 }
 
 func (s *BinaryST[K, I]) Print() {
-  s.head.print(func(v I, h int) {
-    fmt.Printf("%" + fmt.Sprint(h+3) + "v\n", v)
+  s.head.print(func(v *BTreeNode[I], h int) {
+    if v == nil {
+      fmt.Println("{nil}")
+    } else {
+      fmt.Printf("%" + fmt.Sprint(h+3) + "v, %d\n", v.Item, v.N)
+    }
   }, 0)
 }
 
@@ -61,16 +65,18 @@ func (s *BinaryST[K, I]) searchR(h *BTreeNode[I], v K) I {
 }
 
 func (s *BinaryST[K, I]) insertR(h *BTreeNode[I], x I) {
+  h.N += 1
+
   if x.Key() < h.Item.Key() {
     if h.L == nil {
-      h.L = &BTreeNode[I]{Item: x}
+      h.L = &BTreeNode[I]{Item: x, N: 1}
       return
     }
 
     s.insertR(h.L, x)
   } else {
     if h.R == nil {
-      h.R = &BTreeNode[I]{Item: x}
+      h.R = &BTreeNode[I]{Item: x, N: 1}
       return
     }
 
@@ -81,12 +87,14 @@ func (s *BinaryST[K, I]) insertR(h *BTreeNode[I], x I) {
 func (s *BinaryST[K, I]) InsertNonRecursive(x I) {
   v := x.Key()
   if s.head == nil {
-    s.head = &BTreeNode[I]{Item: x}
+    s.head = &BTreeNode[I]{Item: x, N: 1}
     return
   }
   p := s.head
   q := p
   for q != nil {
+    q.N += 1
+
     if v < q.Item.Key() {
       q = q.L
     } else {
@@ -99,9 +107,9 @@ func (s *BinaryST[K, I]) InsertNonRecursive(x I) {
   }
 
   if v < p.Item.Key() {
-    p.L = &BTreeNode[I]{Item: x}
+    p.L = &BTreeNode[I]{Item: x, N: 1}
   } else {
-    p.R = &BTreeNode[I]{Item: x}
+    p.R = &BTreeNode[I]{Item: x, N: 1}
   }
 }
 
@@ -111,7 +119,7 @@ func (s *BinaryST[K, I]) Search(v K) I {
 
 func (s *BinaryST[K, I]) Insert(x I) {
   if s.head == nil {
-    s.head = &BTreeNode[I]{Item: x}
+    s.head = &BTreeNode[I]{Item: x, N: 1}
     return
   }
   s.insertR(s.head, x)
@@ -125,13 +133,29 @@ func (s *BinaryST[K, I]) rotR(h **BTreeNode[I]) error {
   if (*h).L == nil {
     return errors.New("h.L is nil, nothing to right-rotate")
   }
-  // h is a pointer to current header link
-  // x is a left node of h, x is the new header
+
   x := (*h).L
-  (*h).L = x.R
-  // h must become right branch of x
-  x.R = *h
-  *h = x
+
+  // x is right node of h. x is the new header
+  var xLn, xRn, hRn int
+  if x.R != nil {
+    xRn = x.R.N
+  }
+  if x.L != nil {
+    xLn = x.L.N
+  }
+  if (*h).R != nil {
+    hRn = (*h).R.N
+  }
+
+  prevh := *h
+  *h = (*h).L
+  prevR := (*h).R
+  (*h).R = prevh
+  prevh.L = prevR
+
+  prevh.N = 1 + xRn + hRn
+  (*h).N = 1 + xLn + prevh.N
 
   return nil
 }
@@ -151,11 +175,36 @@ func (s *BinaryST[K, I]) rotL(h **BTreeNode[I]) error {
   if (*h).R == nil {
     return errors.New("h.R is nil, nothing to left-rotate")
   }
-  // x is right node of h. x is the new header
+
   x := (*h).R
-  (*h).R = x.L
-  x.L = *h
-  *h = x
+
+  // x is right node of h. x is the new header
+  var xLn, xRn, hLn int
+  if x.R != nil {
+    xRn = x.R.N
+  }
+  if x.L != nil {
+    xLn = x.L.N
+  }
+  if (*h).L != nil {
+    hLn = (*h).L.N
+  }
+
+  // prevh is previous root
+  prevh := *h
+  // *h now points to new root, it is previous right branch
+  *h = (*h).R
+  // save left branch of previous right branch (2-level-nesting)
+  prevL := (*h).L
+  // new root left branch now points on previous root
+  (*h).L = prevh
+  // previous root right branch now points
+  // on left branch of previous right branch 
+  prevh.R = prevL
+
+  // +1 this node
+  prevh.N = 1 + hLn + xLn
+  (*h).N = 1 + xRn + prevh.N
 
   return nil
 }
@@ -169,9 +218,10 @@ func (s *BinaryST[K, I]) TopRotateL() error {
 
 func (s *BinaryST[K, I]) insertT(h **BTreeNode[I], x I) {
   hv := *h
+  hv.N += 1
   if x.Key() < hv.Item.Key() {
     if hv.L == nil {
-      hv.L = &BTreeNode[I]{Item: x}
+      hv.L = &BTreeNode[I]{Item: x, N: 1}
       return
     }
     s.insertT(&(hv.L), x)
@@ -180,7 +230,7 @@ func (s *BinaryST[K, I]) insertT(h **BTreeNode[I], x I) {
     }
   } else {
     if hv.R == nil {
-      hv.R = &BTreeNode[I]{Item: x}
+      hv.R = &BTreeNode[I]{Item: x, N: 1}
       return
     }
     s.insertT(&(hv.R), x)
@@ -192,7 +242,7 @@ func (s *BinaryST[K, I]) insertT(h **BTreeNode[I], x I) {
 
 func (s *BinaryST[K, I]) InsertInRoot(x I) {
   if s.head == nil {
-    s.head = &BTreeNode[I]{Item: x}
+    s.head = &BTreeNode[I]{Item: x, N: 1}
     return
   }
   s.insertT(&s.head, x)
@@ -206,8 +256,29 @@ func (s *BinaryST[K, I]) Remove(x I) {
   panic("not implemented")
 }
 
-func (s *BinaryST[K, I]) Select(_ int) I {
-  panic("not implemented")
+func (s *BinaryST[K, I]) selectR(h *BTreeNode[I], k int) I {
+  if h == nil {
+    var zero I
+    return zero
+  }
+  var t int
+  if h.L != nil {
+    t = h.L.N
+  }
+  if t > k {
+    return s.selectR(h.L, k)
+  }
+  if t < k {
+    // t elements on left branch,
+    // we need (t-k)'th smallest
+    // element from the right branch
+    return s.selectR(h.R, k-t-1)
+  }
+  return h.Item
+}
+
+func (s *BinaryST[K, I]) Select(k int) I {
+  return s.selectR(s.head, k)
 }
 
 func (s *BinaryST[K, I]) Count() int {

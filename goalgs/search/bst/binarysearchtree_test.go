@@ -73,6 +73,30 @@ func TestBSTRotateR(t *testing.T) {
   }
 }
 
+func TestBSTRotLCount(t *testing.T) {
+  tree := bst.NewBinaryST[uint, *index.STItem]()
+
+  first := index.NewItem()
+  first.SetKey(0)
+  first.SetValue(0)
+  tree.Insert(first)
+
+  second := index.NewItem()
+  second.SetKey(1)
+  second.SetValue(1)
+  tree.Insert(second)
+
+  third := index.NewItem()
+  third.SetKey(2)
+  third.SetValue(2)
+  tree.Insert(third)
+
+  err := tree.TopRotateL()
+  if err != nil {
+    t.Error(err)
+  }
+}
+
 func TestInsertRoot(t *testing.T) {
   tree := bst.NewBinaryST[uint, *index.STItem]()
 
@@ -86,5 +110,26 @@ func TestInsertRoot(t *testing.T) {
 
   if tree.Head().Item.Key() != items[3].Key() {
     t.Errorf("wrong head key")
+  }
+}
+
+func TestBSTSelect(t *testing.T) {
+  tree := bst.NewBinaryST[uint, *index.STItem]()
+
+  items := make([](*index.STItem), 5)
+  for i := 0; i < len(items); i++ {
+    items[i] = index.NewItem()
+    items[i].SetKey(uint(i))
+    items[i].SetValue(float32(i))
+    tree.InsertInRoot(items[i])
+  }
+
+  searchKey := 4
+  v := tree.Select(searchKey)
+  if v == nil {
+    t.Errorf("got nil")
+  }
+  if v.Key() != uint(searchKey) {
+    t.Errorf("wrong key, got %d, expected %d\n", v.Key(), searchKey)
   }
 }
