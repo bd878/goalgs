@@ -43,7 +43,7 @@ func (s *BinaryST[K, I]) Print() {
     if v == nil {
       fmt.Println("{nil}")
     } else {
-      fmt.Printf("%" + fmt.Sprint(h+3) + "v, %d\n", v.Item, v.N)
+      fmt.Printf("%" + fmt.Sprint(h+3) + "v, N: %d\n", v.Item, v.N)
     }
   }, 0)
 }
@@ -252,10 +252,6 @@ func (s *BinaryST[K, I]) Sort() {
   panic("not implemented")
 }
 
-func (s *BinaryST[K, I]) Remove(x I) {
-  panic("not implemented")
-}
-
 func (s *BinaryST[K, I]) selectR(h *BTreeNode[I], k int) I {
   if h == nil {
     var zero I
@@ -282,5 +278,63 @@ func (s *BinaryST[K, I]) Select(k int) I {
 }
 
 func (s *BinaryST[K, I]) Count() int {
-  panic("not implemented")
+  return s.Head().N
+}
+
+// Put k'th least element in the root.
+// Rotates when necessary.
+// 0'th is the smallest element
+func (s *BinaryST[K, I]) partitionR(h **BTreeNode[I], k int) {
+  hv := *h
+  var t int
+  if hv.L != nil {
+    t = hv.L.N
+  }
+  if t > k {
+    s.partitionR(&(hv.L), k)
+    s.rotR(h)
+  }
+  if t < k {
+    s.partitionR((&hv.R), k-t-1)
+    s.rotL(h)
+  }
+}
+
+func (s *BinaryST[K, I]) Partition(k int) {
+  s.partitionR(&s.head, k)
+}
+
+func (s *BinaryST[K, I]) joinLR(a *BTreeNode[I], b *BTreeNode[I]) *BTreeNode[I] {
+  if b == nil {
+    return a
+  }
+  s.partitionR(&b, 0)
+  b.L = a
+  return b
+}
+
+func (s *BinaryST[K, I]) removeR(h **BTreeNode[I], v K) {
+  if (*h) == nil {
+    return
+  }
+  hv := *h
+  w := hv.Item.Key()
+  if v < w {
+    if hv.L != nil {
+      s.removeR(&(hv.L), v)
+    }
+  }
+  if v > w {
+    if hv.R != nil {
+      s.removeR(&(hv.R), v)
+    }
+  }
+  if v == w {
+    // write new root in head
+    *h = s.joinLR(hv.L, hv.R)
+  }
+}
+
+func (s *BinaryST[K, I]) Remove(x I) {
+  s.removeR(&(s.head), x.Key())
 }

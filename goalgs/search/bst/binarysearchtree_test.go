@@ -133,3 +133,49 @@ func TestBSTSelect(t *testing.T) {
     t.Errorf("wrong key, got %d, expected %d\n", v.Key(), searchKey)
   }
 }
+
+func TestBSTPartition(t *testing.T) {
+  tree := bst.NewBinaryST[uint, *index.STItem]()
+
+  items := make([](*index.STItem), 5)
+  for i := len(items)-1; i >= 0; i-- {
+    items[i] = index.NewItem()
+    items[i].SetKey(uint(i))
+    items[i].SetValue(float32(i))
+    tree.Insert(items[i])
+  }
+
+  lowestCount := 0 // put smallest element on root
+  tree.Partition(lowestCount)
+  got := tree.Head().Item.Key()
+  expected := uint(items[0].Key())
+  if got != expected {
+    t.Errorf("wrong key, got %d, expected %d\n", got, expected)
+  }
+}
+
+func TestBSTRemove(t *testing.T) {
+  tree := bst.NewBinaryST[uint, *index.STItem]()
+
+  items := make([](*index.STItem), 5)
+  for i := len(items)-1; i >= 0; i-- {
+    items[i] = index.NewItem()
+    items[i].SetKey(uint(i))
+    items[i].SetValue(float32(i))
+    tree.Insert(items[i])
+  }
+
+  item := items[3]
+  exists := tree.Search(item.Key())
+  tree.Remove(item)
+  removed := tree.Search(item.Key())
+  if exists == nil && exists.Key() == item.Key() {
+    t.Errorf("not exists")
+  }
+  if exists != nil && exists.Key() != item.Key() {
+    t.Errorf("wrong key")
+  }
+  if removed != nil {
+    t.Errorf("still exists")
+  }
+}
