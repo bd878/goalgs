@@ -179,3 +179,30 @@ func TestBSTRemove(t *testing.T) {
     t.Errorf("still exists")
   }
 }
+
+func TestBSTJoin(t *testing.T) {
+  makeTree := func(from, to int) *bst.BinaryST[uint, *index.STItem] {
+    result := bst.NewBinaryST[uint, *index.STItem]()
+
+    count := to-from
+    items := make([](*index.STItem), count)
+    for i := 0; i < count; i++ {
+      items[i] = index.NewItem()
+      items[i].SetKey(uint(from+i))
+      items[i].SetValue(float32(from+i))
+      result.Insert(items[i])
+    }
+
+    return result
+  }
+
+  firstCount := 4
+  secondCount := 3
+  first := makeTree(0, firstCount)
+  second := makeTree(firstCount+1, firstCount+1+secondCount)
+
+  first.Join(second)
+  if first.Head().N != (firstCount + secondCount) {
+    t.Errorf("wrong items count after join")
+  }
+}

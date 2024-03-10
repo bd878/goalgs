@@ -222,18 +222,18 @@ func (s *BinaryST[K, I]) insertT(h **BTreeNode[I], x I) {
   if x.Key() < hv.Item.Key() {
     if hv.L == nil {
       hv.L = &BTreeNode[I]{Item: x, N: 1}
-      return
+    } else {
+      s.insertT(&(hv.L), x)
     }
-    s.insertT(&(hv.L), x)
     if err := s.rotR(h); err != nil {
       panic(err)
     }
   } else {
     if hv.R == nil {
       hv.R = &BTreeNode[I]{Item: x, N: 1}
-      return
+    } else {
+      s.insertT(&(hv.R), x)
     }
-    s.insertT(&(hv.R), x)
     if err := s.rotL(h); err != nil {
       panic(err)
     }
@@ -310,6 +310,7 @@ func (s *BinaryST[K, I]) joinLR(a *BTreeNode[I], b *BTreeNode[I]) *BTreeNode[I] 
   }
   s.partitionR(&b, 0)
   b.L = a
+  b.N += a.N
   return b
 }
 
@@ -330,11 +331,37 @@ func (s *BinaryST[K, I]) removeR(h **BTreeNode[I], v K) {
     }
   }
   if v == w {
-    // write new root in head
+    // write new root in parent,
+    // erase previous item
     *h = s.joinLR(hv.L, hv.R)
   }
 }
 
 func (s *BinaryST[K, I]) Remove(x I) {
   s.removeR(&(s.head), x.Key())
+}
+
+func (s *BinaryST[K, I]) joinR(a *BTreeNode[I], b *BTreeNode[I]) *BTreeNode[I] {
+  if b == nil {
+    return a
+  }
+  if a == nil {
+    return b
+  } 
+  s.insertT(&a, b.Item)
+  s.head = a
+  a.L = s.joinR(a.L, b.L)
+  a.R = s.joinR(a.R, b.R)
+  a.N = 1
+  if a.L != nil {
+    a.N += a.L.N
+  }
+  if a.R != nil {
+    a.N += a.R.N
+  }
+  return a
+}
+
+func (s *BinaryST[K, I]) Join(b *BinaryST[K, I]) {
+  s.head = s.joinR(s.head, b.Head())
 }
