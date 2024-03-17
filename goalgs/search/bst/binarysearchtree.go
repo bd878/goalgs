@@ -365,3 +365,23 @@ func (s *BinaryST[K, I]) joinR(a *BTreeNode[I], b *BTreeNode[I]) *BTreeNode[I] {
 func (s *BinaryST[K, I]) Join(b *BinaryST[K, I]) {
   s.head = s.joinR(s.head, b.Head())
 }
+
+func (s *BinaryST[K, I]) heightR(h *BTreeNode[I]) int {
+  if h.L == nil && h.R == nil {
+    return 0
+  }
+
+  var lHeight, rHeight int
+  if h.L != nil {
+    lHeight = s.heightR(h.L)
+  }
+  if h.R != nil {
+    rHeight = s.heightR(h.R)
+  }
+
+  return max(lHeight, rHeight) + 1
+}
+
+func (s *BinaryST[K, I]) Height() int {
+  return s.heightR(s.head)
+}
