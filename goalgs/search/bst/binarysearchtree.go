@@ -216,6 +216,7 @@ func (s *BinaryST[K, I]) TopRotateL() error {
   return nil
 }
 
+// insert in root
 func (s *BinaryST[K, I]) insertT(h **BTreeNode[I], x I) {
   hv := *h
   hv.N += 1

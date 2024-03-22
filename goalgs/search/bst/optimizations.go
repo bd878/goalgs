@@ -36,3 +36,15 @@ func (s *BinaryST[K, I]) RandomInsert(x I) {
   }
   s.randomInsertR(&s.head, x)
 }
+
+// We assume, that s and b are already well-balanced
+func (s *BinaryST[K, I]) RandomJoin(b *BinaryST[K, I]) {
+  n := s.head.N
+  if rand.Intn(RAND_MAX) /
+    (RAND_MAX /
+      (n + b.Head().N) + 1) < n {
+    s.head = s.joinR(b.Head(), s.head)
+  } else {
+    s.head = s.joinR(s.head, b.Head())
+  }
+}

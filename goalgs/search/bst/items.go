@@ -32,3 +32,25 @@ func (si *StringItem) Rand() {
     si.value += string(chars[rand.Intn(len(chars))])
   }
 }
+
+type IntItem struct {
+  key int
+  value int
+}
+
+func (ii *IntItem) SetKey(k int) {
+  ii.key = k
+}
+
+func (ii *IntItem) Key() int {
+  return ii.key
+}
+
+func (ii *IntItem) Null() bool {
+  return ii.key == 0
+}
+
+func (ii *IntItem) Rand() {
+  ii.key = rand.Intn(MAX_KEY)+1
+  ii.value = rand.Intn(MAX_KEY)
+}
