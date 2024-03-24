@@ -29,6 +29,85 @@ func (s *BinaryST[K, I]) randomInsertR(h **BTreeNode[I], x I) {
   }
 }
 
+// must be used in RandomRemove instead of joinLR.
+// we suppose that a and b are two branches of one tree,
+// so a < b, and hence a.L < a.R < b.L < b.R
+// Public for tests
+func (s *BinaryST[K, I]) RandomJoinLR(a *BTreeNode[I], b *BTreeNode[I]) *BTreeNode[I] {
+  if a == nil {
+    return b
+  }
+  if b == nil {
+    return a
+  }
+  if rand.Intn(RAND_MAX) /
+    (RAND_MAX /
+      (a.N + b.N) + 1) < a.N {
+    a.R = s.RandomJoinLR(a.R, b) // b != nil, a.R ?= nil
+
+    a.N = 1 + a.R.N
+    if a.L != nil {
+      a.N += a.L.N
+    }
+
+    return a
+  } else {
+    b.L = s.RandomJoinLR(a, b.L) // a != nil, b.L ?= nil
+
+    b.N = 1 + b.L.N
+    if b.R != nil {
+      b.N += b.R.N
+    }
+
+    return b
+  }
+}
+
+// copied from removeR
+// return true if key found and value removed
+func (s *BinaryST[K, I]) randomRemoveR(h **BTreeNode[I], v K) bool {
+  if (*h) == nil {
+    return false
+  }
+  hv := *h
+  w := hv.Item.Key()
+  if v < w {
+    if hv.L != nil {
+      if s.randomRemoveR(&(hv.L), v) {
+        hv.N -= 1
+      }
+    }
+  }
+  if v > w {
+    if hv.R != nil {
+      if s.randomRemoveR(&(hv.R), v) {
+        hv.N -= 1
+      }
+    }
+  }
+  if v == w {
+    // write new root in parent,
+    // erase previous item
+    *h = s.RandomJoinLR(hv.L, hv.R)
+
+    hv = *h
+    hv.N = 1
+    if hv.L != nil {
+      hv.N += hv.L.N
+    }
+    if hv.R != nil {
+      hv.N += hv.R.N
+    }
+    return true
+  }
+  return false
+}
+
+// break interface, remove by key, not by item
+func (s *BinaryST[K, I]) RandomRemove(v K) {
+  s.randomRemoveR(&(s.head), v)
+}
+
 func (s *BinaryST[K, I]) RandomInsert(x I) {
   if s.head == nil {
     s.head = &BTreeNode[I]{Item: x, N: 1}

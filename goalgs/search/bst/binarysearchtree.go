@@ -34,6 +34,10 @@ func NewBinaryST[K constraints.Ordered, I types.Item[K]]() *BinaryST[K, I] {
   return &BinaryST[K, I]{}
 }
 
+func (s *BinaryST[K, I]) Init(h *BTreeNode[I]) {
+  s.head = h
+}
+
 func (s *BinaryST[K, I]) Head() *BTreeNode[I] {
   return s.head
 }
@@ -315,6 +319,8 @@ func (s *BinaryST[K, I]) joinLR(a *BTreeNode[I], b *BTreeNode[I]) *BTreeNode[I] 
   return b
 }
 
+// N updates in joinLR.
+// see also randomRemoveR in optimizations
 func (s *BinaryST[K, I]) removeR(h **BTreeNode[I], v K) {
   if (*h) == nil {
     return
