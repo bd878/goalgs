@@ -92,3 +92,16 @@ func TestBSTRandomRemove(t *testing.T) {
     t.Errorf("root removed, wrong count, got: %d, expected: %d", tree.Head().N, prevN-1)
   }
 }
+
+func TestBSTSplayInsert(t *testing.T) {
+  tree := makeTree(0, 10)
+
+  item1 := &bst.IntItem{}
+  item1.Rand()
+  item1.SetKey(11)
+  tree.SplayInsert(item1)
+
+  if tree.Head().Item.Key() != item1.Key() {
+    t.Errorf("wrong item in root, got: %d, expected: %d\n", tree.Head().N, item1.Key())
+  }
+}

@@ -127,3 +127,47 @@ func (s *BinaryST[K, I]) RandomJoin(b *BinaryST[K, I]) {
     s.head = s.joinR(s.head, b.Head())
   }
 }
+
+func (s *BinaryST[K, I]) splay(h **BTreeNode[I], x I) {
+  hv := *h
+  w := hv.Item.Key()
+
+  hv.N += 1
+  if x.Key() < w { // left branch, right-right or left-right
+    if hv.L == nil {
+      hv.L = &BTreeNode[I]{Item: x, N: 1}
+      return
+    }
+
+    if x.Key() < hv.L.Item.Key() {
+      s.splay(&(hv.L), x) // insert left
+      s.rotR(h) // rotate right from root
+    } else {
+      s.splay(&(hv.R), x) // insert right
+      s.rotL(&(hv.L)) // rotate left from child node
+    }
+    s.rotR(h) // rotate right
+  } else { // right branch, left-left or right-left
+    if hv.R == nil {
+      hv.R = &BTreeNode[I]{Item: x, N: 1}
+      return
+    }
+
+    if x.Key() > hv.R.Item.Key() {
+      s.splay(&(hv.R), x) // insert right
+      s.rotL(h) // rotate left from root
+    } else {
+      s.splay(&(hv.L), x) // insert left
+      s.rotR(&(hv.R)) // rotate right from child node
+    }
+    s.rotL(h)
+  }
+}
+
+func (s *BinaryST[K, I]) SplayInsert(x I) {
+  if s.head == nil {
+    s.head = &BTreeNode[I]{Item: x, N: 1}
+    return
+  }
+  s.splay(&s.head, x)
+}
