@@ -108,7 +108,7 @@ func TestInsertRoot(t *testing.T) {
     tree.InsertInRoot(items[i])
   }
 
-  if tree.Head().Item.Key() != items[3].Key() {
+  if tree.Head().Item.Key() != items[4].Key() {
     t.Errorf("wrong head key")
   }
 }

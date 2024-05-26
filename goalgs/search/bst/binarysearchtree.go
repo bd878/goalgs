@@ -7,25 +7,6 @@ import (
   "github.com/bd878/goalgs/search/types"
 )
 
-// TODO: rewrite on ds/tree/binarytree
-type BTreeNode[I interface{}] struct {
-  Item I
-  N int // internal nodes in branch
-  L *BTreeNode[I]
-  R *BTreeNode[I]
-}
-
-func (n *BTreeNode[I]) print(printer func(*BTreeNode[I], int), h int) {
-  if n == nil {
-    printer(nil, h)
-    return;
-  }
-
-  printer(n, h)
-  n.R.print(printer, h+1)
-  n.L.print(printer, h+1)
-}
-
 type BinaryST[K constraints.Ordered, I types.Item[K]] struct {
   head *BTreeNode[I]
 }
@@ -130,7 +111,7 @@ func (s *BinaryST[K, I]) Insert(x I) {
 }
 
 // Rotates tree rights
-func (s *BinaryST[K, I]) rotR(h **BTreeNode[I]) error {
+func rotR[K constraints.Ordered, I types.Item[K]](h **BTreeNode[I]) error {
   if *h == nil {
     return errors.New("h is nil")
   }
@@ -166,13 +147,13 @@ func (s *BinaryST[K, I]) rotR(h **BTreeNode[I]) error {
 
 func (s *BinaryST[K, I]) TopRotateR() error {
   if s.head != nil {
-    return s.rotR(&s.head)
+    return rotR(&s.head)
   }
   return nil
 }
 
 // Rotates tree lefts
-func (s *BinaryST[K, I]) rotL(h **BTreeNode[I]) error {
+func rotL[K constraints.Ordered, I types.Item[K]](h **BTreeNode[I]) error {
   if *h == nil {
     return errors.New("h is nil")
   }
@@ -215,7 +196,7 @@ func (s *BinaryST[K, I]) rotL(h **BTreeNode[I]) error {
 
 func (s *BinaryST[K, I]) TopRotateL() error {
   if s.head != nil {
-    return s.rotL(&s.head)
+    return rotL(&s.head)
   }
   return nil
 }
@@ -230,7 +211,7 @@ func (s *BinaryST[K, I]) insertT(h **BTreeNode[I], x I) {
     } else {
       s.insertT(&(hv.L), x)
     }
-    if err := s.rotR(h); err != nil {
+    if err := rotR(h); err != nil {
       panic(err)
     }
   } else {
@@ -239,7 +220,7 @@ func (s *BinaryST[K, I]) insertT(h **BTreeNode[I], x I) {
     } else {
       s.insertT(&(hv.R), x)
     }
-    if err := s.rotL(h); err != nil {
+    if err := rotL(h); err != nil {
       panic(err)
     }
   }
@@ -297,11 +278,11 @@ func (s *BinaryST[K, I]) partitionR(h **BTreeNode[I], k int) {
   }
   if t > k {
     s.partitionR(&(hv.L), k)
-    s.rotR(h)
+    rotR(h)
   }
   if t < k {
     s.partitionR((&hv.R), k-t-1)
-    s.rotL(h)
+    rotL(h)
   }
 }
 

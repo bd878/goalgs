@@ -141,12 +141,12 @@ func (s *BinaryST[K, I]) splay(h **BTreeNode[I], x I) {
 
     if x.Key() < hv.L.Item.Key() {
       s.splay(&(hv.L), x) // insert left
-      s.rotR(h) // rotate right from root
+      rotR(h) // rotate right from root
     } else {
       s.splay(&(hv.R), x) // insert right
-      s.rotL(&(hv.L)) // rotate left from child node
+      rotL(&(hv.L)) // rotate left from child node
     }
-    s.rotR(h) // rotate right
+    rotR(h) // rotate right
   } else { // right branch, left-left or right-left
     if hv.R == nil {
       hv.R = &BTreeNode[I]{Item: x, N: 1}
@@ -155,12 +155,12 @@ func (s *BinaryST[K, I]) splay(h **BTreeNode[I], x I) {
 
     if x.Key() > hv.R.Item.Key() {
       s.splay(&(hv.R), x) // insert right
-      s.rotL(h) // rotate left from root
+      rotL(h) // rotate left from root
     } else {
       s.splay(&(hv.L), x) // insert left
-      s.rotR(&(hv.R)) // rotate right from child node
+      rotR(&(hv.R)) // rotate right from child node
     }
-    s.rotL(h)
+    rotL(h)
   }
 }
 

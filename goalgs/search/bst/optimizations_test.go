@@ -101,7 +101,7 @@ func TestBSTSplayInsert(t *testing.T) {
   item1.SetKey(11)
   tree.SplayInsert(item1)
 
-  if tree.Head().Item.Key() != item1.Key() {
-    t.Errorf("wrong item in root, got: %d, expected: %d\n", tree.Head().N, item1.Key())
+  if tree.Head().Item.Key() != item1.Key() { /* TODO: elaborate, sometimes it fails */
+    t.Errorf("wrong item in root, got: %d, expected: %d\n", tree.Head().Item.Key(), item1.Key())
   }
 }
