@@ -9,7 +9,11 @@ type BTreeNode[I interface{}] struct {
 }
 
 type RBBTreeNode[I interface{}] struct {
-  btree *BTreeNode[I]
+  Item I
+  N int
+  L *RBBTreeNode[I]
+  R *RBBTreeNode[I]
+
   red bool // for Red-Black trees
 }
 

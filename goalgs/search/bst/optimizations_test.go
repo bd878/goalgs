@@ -2,7 +2,6 @@ package bst_test
 
 import (
   "testing"
-  // "math/rand"
 
   "github.com/bd878/goalgs/search/bst"
 )
