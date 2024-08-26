@@ -23,4 +23,9 @@ func TestLinearProbingHashtable(t *testing.T) {
   if _, err = st.Search(nonExist); err == nil {
     t.Errorf("must not exist")
   }
+
+  st.Remove(exist)
+  if _, err = st.Search(exist); err == nil {
+    t.Errorf("removed, must not exist")
+  }
 }

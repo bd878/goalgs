@@ -45,3 +45,23 @@ func (h *LinearProbingHashtable) Insert(v hashing.Item) {
   h.Items[i] = v
   h.N += 1
 }
+
+func (h *LinearProbingHashtable) Remove(k int) {
+  i := hashing.HashInt(k, h.M)
+  for h.Items[i] != nil && k != h.Items[i].Key() {
+    i = (i+1) % h.M
+  }
+  if h.Items[i] == nil {
+    return
+  }
+  h.Items[i] = nil
+  h.N -= 1
+  /* shift all items one elemenet right
+     since a hole stops search */
+  for j := i+1; h.Items[j] != nil; j = (j+1) % h.M {
+    v2 := h.Items[j]
+    h.Items[j] = nil
+    h.N -= 1
+    h.Insert(v2)
+  }
+}
