@@ -2,21 +2,9 @@ package separatell_test
 
 import (
   "testing"
+  "github.com/bd878/goalgs/search/hashing"
   "github.com/bd878/goalgs/search/hashing/separatell"
 )
-
-type IntItem struct {
-  value int
-  key int
-}
-
-func (v *IntItem) Key() int {
-  return v.key
-}
-
-func (v *IntItem) Value() int {
-  return v.value
-}
 
 func TestSeparateLL(t *testing.T) {
   var err error
@@ -33,7 +21,7 @@ func TestSeparateLL(t *testing.T) {
     19, 24, /* 4*/
   }
   for _, v := range values {
-    table.Insert(&IntItem{value: v, key: v})
+    table.Insert(hashing.NewIntItem(v, v))
   }
 
   _, err = table.Search(exist)

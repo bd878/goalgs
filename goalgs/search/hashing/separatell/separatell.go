@@ -1,16 +1,8 @@
 package separatell
 
 import (
-  "errors"
   "github.com/bd878/goalgs/search/hashing"
 )
-
-var ErrNoItem = errors.New("no item")
-
-type Item interface {
-  Key() int
-  Value() int
-}
 
 type HashtableLL struct {
   Heads []*HashtableNode
@@ -21,7 +13,7 @@ type HashtableLL struct {
 
 type HashtableNode struct {
   next *HashtableNode
-  Item Item
+  Item hashing.Item
 }
 
 func NewHashtableLL(maxM, nodesPerList int) *HashtableLL {
@@ -32,20 +24,20 @@ func NewHashtableLL(maxM, nodesPerList int) *HashtableLL {
   }
 }
 
-func (s *HashtableLL) Insert(v Item) {
+func (s *HashtableLL) Insert(v hashing.Item) {
   i := hashing.HashInt(v.Key(), s.M)
   s.Heads[i] = &HashtableNode{Item: v, next: s.Heads[i]}
   s.N++
 }
 
-func (s *HashtableLL) Search(k int) (Item, error) {
+func (s *HashtableLL) Search(k int) (hashing.Item, error) {
   bucket := s.Heads[hashing.HashInt(k, s.M)]
   return searchR(k, bucket)
 }
 
-func searchR(k int, node *HashtableNode) (Item, error) {
+func searchR(k int, node *HashtableNode) (hashing.Item, error) {
   if node == nil {
-    return nil, ErrNoItem
+    return nil, hashing.ErrNoItem
   }
   if node.Item.Key() == k {
     return node.Item, nil
