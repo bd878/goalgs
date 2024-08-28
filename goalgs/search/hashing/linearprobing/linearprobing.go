@@ -25,6 +25,28 @@ func (h *LinearProbingHashtable) Count() int {
   return h.N
 }
 
+/* untested */
+func (h *LinearProbingHashtable) Expand() *LinearProbingHashtable {
+  initFn := func(maxM int) *LinearProbingHashtable {
+    m := maxM*2
+    return &LinearProbingHashtable{
+      Items: make([]hashing.Item, m),
+      N: 0,
+      M: m,
+      maxM: maxM,
+    }
+  }
+
+  t := initFn(h.M*2)
+  for i := 0; i < h.M/2; i++ {
+    if h.Items[i] != nil {
+      t.Insert(h.Items[i])
+    }
+  }
+
+  return t
+}
+
 func (h *LinearProbingHashtable) Search(k int) (hashing.Item, error) {
   i := hashing.HashInt(k, h.M)
   for h.Items[i] != nil {
